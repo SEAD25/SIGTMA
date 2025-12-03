@@ -1,5 +1,6 @@
 package sn.uasz.SIGTMA.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,5 +26,6 @@ public class Etudiant {
     private Filiere filiere;
 
     @OneToOne(mappedBy = "etudiant")
+    @JsonIgnore
     private TheseMemoire these;
 }

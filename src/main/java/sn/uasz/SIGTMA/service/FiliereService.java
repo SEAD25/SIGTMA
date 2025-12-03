@@ -1,0 +1,27 @@
+package sn.uasz.SIGTMA.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import sn.uasz.SIGTMA.model.Filiere;
+import sn.uasz.SIGTMA.repository.FiliereRepository;
+
+import java.util.List;
+
+@Service
+public class FiliereService {
+
+    @Autowired
+    private FiliereRepository filiereRepository;
+
+    public Filiere ajouterFiliere(Filiere filiere) {
+        return filiereRepository.save(filiere);
+    }
+
+    public List<Filiere> listerFilieres() {
+        return filiereRepository.findAll();
+    }
+
+    public void supprimerFiliere(Long id) {
+        filiereRepository.deleteById(id);
+    }
+}

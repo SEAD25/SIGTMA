@@ -1,5 +1,6 @@
 package sn.uasz.SIGTMA.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,5 +23,6 @@ public class Encadrant {
     private String email;
 
     @OneToMany(mappedBy = "encadrant")
+    @JsonIgnore
     private List<TheseMemoire> theses;
 }
