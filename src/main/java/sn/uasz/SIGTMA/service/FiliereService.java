@@ -24,4 +24,11 @@ public class FiliereService {
     public void supprimerFiliere(Long id) {
         filiereRepository.deleteById(id);
     }
+
+    public Filiere modifierFiliere(Long id, Filiere details) {
+        Filiere f = filiereRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Filière non trouvée"));
+        f.setNom(details.getNom());
+        return filiereRepository.save(f);
+    }
 }
