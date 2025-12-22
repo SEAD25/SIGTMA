@@ -1,0 +1,247 @@
+:root {
+    --primary-emerald: #10b981;
+    --dark-emerald: #064e3b;
+    --light-emerald: #d1fae5;
+    --soft-emerald: #ecfdf5;
+    --vibrant-emerald: #34d399;
+    --mint-emerald: #6ee7b7;
+    --forest-emerald: #064e3b;
+    --lightest-green: #f0fdf4;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--lightest-green);
+}
+
+/* Sidebar Styling */
+.sidebar {
+    min-height: 100vh;
+    background-color: var(--dark-emerald);
+    color: white;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0.8rem 1.5rem;
+    border-radius: 0.5rem;
+    margin: 0.2rem 1rem;
+    transition: all 0.2s;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .nav-link.active {
+    background-color: var(--primary-emerald);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.sidebar .nav-link i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: white !important;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid var(--light-emerald);
+}
+
+/* Card Styling */
+.card {
+    border: 1px solid var(--light-emerald);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border-radius: 1rem;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* Button Styling */
+.btn-primary,
+.btn-emerald {
+    background-color: var(--primary-emerald);
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.6rem;
+    transition: all 0.2s;
+    color: white;
+}
+
+.btn-primary:hover,
+.btn-emerald:hover {
+    background-color: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    color: white;
+}
+
+/* Utilities */
+.text-emerald {
+    color: var(--primary-emerald) !important;
+}
+
+.text-forest {
+    color: var(--dark-emerald) !important;
+}
+
+.bg-emerald {
+    background-color: var(--primary-emerald) !important;
+}
+
+.bg-emerald-soft {
+    background-color: var(--soft-emerald) !important;
+}
+
+.bg-emerald-light {
+    background-color: var(--light-emerald) !important;
+}
+
+.bg-success-soft {
+    background-color: #f0fdf4 !important;
+    color: #16a34a !important;
+}
+
+.border-emerald {
+    border-color: var(--light-emerald) !important;
+}
+
+.border-emerald-soft {
+    border-color: var(--light-emerald) !important;
+}
+
+/* Dashboard Specifics */
+.avatar-sm {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.btn-icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+/* Custom Gradients/Backgrounds from Aide-Bibliothecaire */
+.bg-emerald-vibrant {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.bg-forest-gradient {
+    background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+}
+
+.bg-mint-vibrant {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+}
+
+.bg-slate-dark {
+    background-color: #1e293b;
+}
+
+.shadow-custom {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-action-emerald,
+.btn-action-forest {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    background: white;
+    text-decoration: none;
+}
+
+.btn-action-emerald:hover {
+    border-color: var(--primary-emerald);
+    background: var(--soft-emerald);
+}
+
+.btn-action-forest:hover {
+    border-color: var(--dark-emerald);
+    background: var(--soft-emerald);
+}
+
+.extra-small {
+    font-size: 0.75rem;
+}
+
+/* Logout Button in Sidebar */
+.sidebar .logout-item {
+    margin-top: auto;
+    margin-bottom: 2rem;
+}
+
+/* Login Page Specifics */
+.login-body {
+    background: linear-gradient(135deg, var(--soft-emerald) 0%, var(--light-emerald) 100%);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 2.5rem;
+    border-radius: 2rem;
+    background: white;
+    box-shadow: 0 1rem 3rem rgba(6, 78, 59, 0.08);
+    border: 1px solid var(--light-emerald);
+}
+
+.logo-container {
+    width: 64px;
+    height: 64px;
+    background: var(--primary-emerald);
+    color: white;
+    border-radius: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
+}
+
+.btn-login {
+    padding: 0.75rem;
+    border-radius: 0.8rem;
+    font-weight: 600;
+    background: var(--primary-emerald);
+    border: none;
+    width: 100%;
+    margin-top: 1rem;
+    transition: all 0.2s;
+    color: white;
+}
+
+.btn-login:hover {
+    background-color: #059669;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
+}

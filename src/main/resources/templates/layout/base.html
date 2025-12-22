@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html th:fragment="html(title, activePage, pageTitle)" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="fr">
+
+<head th:fragment="header">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">SIGTMA</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Bootstrap 5 JS (Moved up to be available for fragments) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom CSS -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar collapse shadow-sm" th:fragment="sidebar">
+                <div class="position-sticky pt-3 flex-grow-1 d-flex flex-column">
+                    <div class="text-center mb-5 mt-3">
+                        <h4 class="fw-bold">SIGTMA</h4>
+                        <p class="text-white-50 small">Gestion des Thèses</p>
+                    </div>
+                    <ul class="nav flex-column mb-auto">
+                        <!-- Admin Links -->
+                        <li class="nav-item" sec:authorize="hasRole('ADMINISTRATEUR')">
+                            <a class="nav-link" th:href="@{/admin/dashboard}"
+                                th:classappend="${activePage == 'dashboard' ? 'active' : ''}">
+                                <i class="fas fa-chart-line"></i> Statistiques
+                            </a>
+                        </li>
+                        <li class="nav-item" sec:authorize="hasRole('ADMINISTRATEUR')">
+                            <a class="nav-link" th:href="@{/admin/users}"
+                                th:classappend="${activePage == 'users' ? 'active' : ''}">
+                                <i class="fas fa-users-cog"></i> Utilisateurs
+                            </a>
+                        </li>
+                        <li class="nav-item" sec:authorize="hasRole('ADMINISTRATEUR')">
+                            <a class="nav-link" th:href="@{/admin/filieres}"
+                                th:classappend="${activePage == 'filieres' ? 'active' : ''}">
+                                <i class="fas fa-graduation-cap"></i> Filières
+                            </a>
+                        </li>
+                        <li class="nav-item" sec:authorize="hasRole('ADMINISTRATEUR')">
+                            <a class="nav-link" th:href="@{/admin/rapports}"
+                                th:classappend="${activePage == 'reports' ? 'active' : ''}">
+                                <i class="fas fa-file-export"></i> Rapports
+                            </a>
+                        </li>
+
+                        <!-- Bibliothécaire Links -->
+                        <li class="nav-item" sec:authorize="hasRole('BIBLIOTHECAIRE')">
+                            <a class="nav-link" th:href="@{/bibliothecaire/dashboard}"
+                                th:classappend="${activePage == 'dashboard' ? 'active' : ''}">
+                                <i class="fas fa-book"></i> Indexation
+                            </a>
+                        </li>
+                        <li class="nav-item" sec:authorize="hasRole('BIBLIOTHECAIRE')">
+                            <a class="nav-link" th:href="@{/bibliothecaire/search}"
+                                th:classappend="${activePage == 'search' ? 'active' : ''}">
+                                <i class="fas fa-search"></i> Recherche Avancée
+                            </a>
+                        </li>
+
+                        <!-- Aide-Bibliothécaire Links -->
+                        <li class="nav-item" sec:authorize="hasRole('AIDE_BIBLIOTHECAIRE')">
+                            <a class="nav-link" th:href="@{/aide-bibliothecaire/dashboard}"
+                                th:classappend="${activePage == 'dashboard' ? 'active' : ''}">
+                                <i class="fas fa-folder-open"></i> Référentiel
+                            </a>
+                        </li>
+                        <li class="nav-item" sec:authorize="hasRole('AIDE_BIBLIOTHECAIRE')">
+                            <a class="nav-link" th:href="@{/aide-bibliothecaire/etudiants}"
+                                th:classappend="${activePage == 'etudiants' ? 'active' : ''}">
+                                <i class="fas fa-user-graduate"></i> Étudiants
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Sidebar Logout (Replaced absolute positioning with logical flow) -->
+                    <div class="logout-item px-3">
+                        <form th:action="@{/logout}" method="post">
+                            <button class="btn btn-outline-light btn-sm w-100 mb-4" type="submit">
+                                <i class="fas fa-sign-out-alt"></i> Déconnexion
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <nav class="navbar navbar-expand-lg navbar-light px-0 py-3 mb-4 sticky-top bg-white border-bottom"
+                    th:fragment="navbar">
+                    <div class="container-fluid">
+                        <span class="navbar-brand h1 mb-0" th:text="${pageTitle}">Dashboard</span>
+                        <div class="d-flex align-items-center">
+                            <div class="dropdown">
+                                <button class="btn btn-link link-dark text-decoration-none dropdown-toggle p-0"
+                                    type="button" data-bs-toggle="dropdown">
+                                    <span sec:authentication="name" class="me-2 fw-medium">User</span>
+                                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center"
+                                        style="width: 32px; height: 32px;">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                                    <li><a class="dropdown-item p-2 px-3 d-block text-decoration-none text-dark small"
+                                            href="#"><i class="fas fa-user me-2"></i> Mon Profil</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <form th:action="@{/logout}" method="post">
+                                            <button type="submit" class="dropdown-item small text-danger p-2 px-3"><i
+                                                    class="fas fa-power-off me-2"></i> Déconnexion</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+
+                <div th:replace="~{::content}">
+                    <!-- Specific content will be injected here -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Additional scripts can be injected here -->
+</body>
+
+</html>

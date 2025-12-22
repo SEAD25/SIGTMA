@@ -20,29 +20,44 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
 
     // Injection du service utilisateur par constructeur
-    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+    private final CustomAuthenticationSuccessHandler successHandler;
+
+    public SecurityConfig(CustomUserDetailsService userDetailsService,
+            CustomAuthenticationSuccessHandler successHandler) {
         this.userDetailsService = userDetailsService;
+        this.successHandler = successHandler;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Désactiver la protection CSRF pour les API REST
+                .csrf(AbstractHttpConfigurer::disable) // Optionnel: activer pour plus de sécurité en prod
                 .authorizeHttpRequests(auth -> auth
-                        // Autoriser l'accès public uniquement à l'endpoint d'inscription
-                        .requestMatchers("/api/utilisateurs/inscription").permitAll()
-                        // Toutes les autres requêtes nécessitent une authentification
-                        .anyRequest().authenticated()
-                )
-                // Utiliser l'authentification HTTP Basic (Login/Password via Postman)
-                .httpBasic(Customizer.withDefaults());
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                        .requestMatchers("/login", "/register", "/api/utilisateurs/inscription").permitAll()
+                        .requestMatchers("/admin/**", "/api/utilisateurs/**").hasRole("ADMINISTRATEUR")
+                        .requestMatchers("/api/utilisateurs/profil").authenticated()
+                        .requestMatchers("/bibliothecaire/**").hasRole("BIBLIOTHECAIRE")
+                        .requestMatchers("/api/filieres/**").hasAnyRole("ADMINISTRATEUR", "AIDE_BIBLIOTHECAIRE")
+                        .requestMatchers("/aide-bibliothecaire/**", "/api/aide/**", "/api/theses/depot",
+                                "/api/etudiants/**", "/api/encadrants/**")
+                        .hasRole("AIDE_BIBLIOTHECAIRE")
+                        .anyRequest().authenticated())
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .successHandler(successHandler)
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll());
 
         return http.build();
     }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        // CORRECTION : Instanciation avec le UserDetailsService en paramètre pour éviter l'erreur
+        // CORRECTION : Instanciation avec le UserDetailsService en paramètre pour
+        // éviter l'erreur
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
 
         // Configuration de l'encodeur de mot de passe (BCrypt)

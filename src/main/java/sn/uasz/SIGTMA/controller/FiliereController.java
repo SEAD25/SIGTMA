@@ -29,4 +29,9 @@ public class FiliereController {
     public void supprimerFiliere(@PathVariable Long id) {
         filiereService.supprimerFiliere(id);
     }
+
+    @PutMapping("/{id}")
+    public Filiere modifierFiliere(@PathVariable Long id, @RequestBody Filiere filiere) {
+        return filiereService.modifierFiliere(id, filiere);
+    }
 }
