@@ -39,4 +39,9 @@ public class EtudiantController {
     public void supprimerEtudiant(@PathVariable Long id) {
         etudiantService.supprimerEtudiant(id);
     }
+
+    @GetMapping("/recherche")
+    public List<Etudiant> rechercher(@RequestParam String motCle) {
+        return etudiantService.rechercherEtudiants(motCle);
+    }
 }

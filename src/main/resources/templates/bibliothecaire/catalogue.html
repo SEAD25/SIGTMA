@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout/base :: html(title='Catalogue & Archives | SIGTMA', activePage='catalogue', pageTitle='Catalogue & Archives')}">
+
+<head></head>
+
+<body>
+    <div th:fragment="content">
+        <div class="row mb-4 align-items-end">
+            <div class="col-md-5">
+                <h5 class="fw-bold text-forest">Catalogue des Thèses Validées</h5>
+                <p class="text-muted extra-small mb-0">Consultez l'ensemble des travaux de recherche validés et
+                    archivés.</p>
+            </div>
+            <div class="col-md-7">
+                <div class="d-flex gap-2 justify-content-end">
+                    <!-- Search Input -->
+                    <div class="input-group shadow-sm" style="width: 300px;">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i
+                                class="fas fa-search"></i></span>
+                        <input type="text" id="searchInput" class="form-control border-start-0 ps-0"
+                            placeholder="Rechercher (Titre, Auteur, Année...)" oninput="searchCatalogue()">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-header bg-white py-3 border-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="badge bg-mint-light text-forest rounded-pill px-3 py-2">
+                        <i class="fas fa-check-circle me-1"></i> Uniquement Validées
+                    </span>
+                    <button class="btn btn-sm btn-outline-forest" onclick="window.print()">
+                        <i class="fas fa-print me-1"></i> Imprimer le Catalogue
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4 text-secondary text-uppercase extra-small fw-bold">Année</th>
+                            <th class="text-secondary text-uppercase extra-small fw-bold">Titre / Sujet</th>
+                            <th class="text-secondary text-uppercase extra-small fw-bold">Étudiant</th>
+                            <th class="text-secondary text-uppercase extra-small fw-bold">Filière</th>
+                            <th class="text-secondary text-uppercase extra-small fw-bold">Encadrant</th>
+                            <th class="text-end pe-4 text-secondary text-uppercase extra-small fw-bold">Fichier</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">Chargement du catalogue...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                loadCatalogue();
+            });
+
+            let debounceTimer;
+            function searchCatalogue() {
+                const query = document.getElementById('searchInput').value;
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    loadCatalogue(query);
+                }, 300);
+            }
+
+            function loadCatalogue(query = '') {
+                // Same endpoint, but we filter client-side or assume endpoint returns all and we filter by status
+                // For a real catalog, we should request ONLY VALIDEE. 
+                // Currently our endpoint /api/theses/recherche returns everything.
+                // Best practice: Filter strictly for status === 'VALIDEE' here in frontend for now.
+
+                const url = query ? `/api/theses/recherche?motCle=${encodeURIComponent(query)}` : '/api/theses';
+
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        const tbody = document.getElementById('tableBody');
+                        tbody.innerHTML = '';
+
+                        // Filter only VALIDEE
+                        const validated = data.filter(d => d.status === 'VALIDEE');
+
+                        if (validated.length === 0) {
+                            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-muted">Aucune thèse validée trouvée.</td></tr>`;
+                            return;
+                        }
+
+                        validated.forEach(d => {
+                            const etudiantName = d.etudiant ? `${d.etudiant.prenom} ${d.etudiant.nom}` : 'N/A';
+                            const filiere = (d.etudiant && d.etudiant.filiere) ? d.etudiant.filiere.nom : '-';
+                            const encadrantName = d.encadrant ? `${d.encadrant.grade} ${d.encadrant.prenom} ${d.encadrant.nom}` : '-';
+
+                            // Boutons d'action
+                            let actionsHtml = '-';
+                            if (d.fichier) {
+                                actionsHtml = `
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a href="/api/theses/files/${d.fichier}" target="_blank" class="btn btn-sm btn-outline-forest rounded-pill" title="Afficher"><i class="fas fa-eye"></i></a>
+                                        <a href="/api/theses/files/${d.fichier}?download=true" class="btn btn-sm btn-forest rounded-pill" title="Télécharger"><i class="fas fa-download"></i></a>
+                                    </div>`;
+                            }
+
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td class="ps-4 fw-bold text-muted">${d.annee}</td>
+                                    <td style="max-width: 300px;">
+                                        <div class="text-truncate fw-medium" title="${d.titre}">${d.titre}</div>
+                                        <span class="badge bg-light text-secondary border extra-small">${d.type}</span>
+                                    </td>
+                                    <td class="small text-dark">${etudiantName}</td>
+                                    <td><span class="badge bg-emerald-soft text-emerald rounded-pill">${filiere}</span></td>
+                                    <td class="small text-muted">${encadrantName}</td>
+                                    <td class="text-end pe-4">
+                                        ${actionsHtml}
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    })
+                    .catch(err => {
+                        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-danger">Erreur: ${err.message}</td></tr>`;
+                    });
+            }
+        </script>
+    </div>
+</body>
+
+</html>

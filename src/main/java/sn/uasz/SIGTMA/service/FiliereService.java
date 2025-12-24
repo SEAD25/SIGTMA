@@ -31,4 +31,8 @@ public class FiliereService {
         f.setNom(details.getNom());
         return filiereRepository.save(f);
     }
+
+    public List<Filiere> rechercherFilieres(String motCle) {
+        return filiereRepository.findByNomContainingIgnoreCase(motCle);
+    }
 }

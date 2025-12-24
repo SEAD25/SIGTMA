@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout/base :: html(title='Rapports & Statistiques | SIGTMA', activePage='rapports', pageTitle='Rapports & Statistiques')}">
+
+<head>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div th:fragment="content">
+        <h5 class="fw-bold text-forest mb-4">Tableau de Bord Analytique</h5>
+
+        <div class="row g-4 mb-5">
+            <!-- Chart 1: Thèses par Filière -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h6 class="fw-bold mb-0 text-secondary"><i
+                                class="fas fa-chart-pie me-2 text-emerald"></i>Répartition par Filière</h6>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chartFiliere" style="max-height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart 2: Évolution par Année -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h6 class="fw-bold mb-0 text-secondary"><i
+                                class="fas fa-chart-line me-2 text-vibrant"></i>Publications par Année</h6>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chartAnnee" style="max-height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Raw Data Section -->
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white py-3 border-0">
+                <h6 class="fw-bold mb-0 text-secondary"><i class="fas fa-table me-2 text-muted"></i>Données Brutes</h6>
+            </div>
+            <div class="card-body">
+                <div class="row" id="rawStatsContainer">
+                    <!-- Text stats injected here -->
+                    <div class="text-center py-5 text-muted">Chargement des données...</div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                loadCharts();
+            });
+
+            function loadCharts() {
+                // Ensure Chart is available
+                if (typeof Chart === 'undefined') {
+                    console.error("Chart.js failed to load.");
+                    document.getElementById('rawStatsContainer').innerHTML =
+                        '<div class="col-12 text-center text-danger p-4"><i class="fas fa-exclamation-triangle"></i> Impossible de charger les graphiques (Problème de connexion internet pour Chart.js).</div>';
+                    // We can still try to load raw data if backend is ok
+                }
+
+                // 1. By Filiere
+                fetch('/api/bibliothecaire/stats/reports/filiere')
+                    .then(res => res.json())
+                    .then(data => {
+                        const labels = Object.keys(data);
+                        const values = Object.values(data);
+
+                        const container = document.getElementById('chartFiliere').parentNode;
+
+                        if (labels.length === 0) {
+                            container.innerHTML = '<div class="d-flex align-items-center justify-content-center h-100 text-muted small py-5"><i class="fas fa-folder-open me-2"></i>Aucune donnée par filière</div>';
+                        } else if (typeof Chart !== 'undefined') {
+                            const ctx = document.getElementById('chartFiliere').getContext('2d');
+                            new Chart(ctx, {
+                                type: 'doughnut',
+                                data: {
+                                    labels: labels,
+                                    datasets: [{
+                                        data: values,
+                                        backgroundColor: ['#10B981', '#34D399', '#6EE7B7', '#059669', '#047857', '#064E3B']
+                                    }]
+                                },
+                                options: { responsive: true, maintainAspectRatio: false }
+                            });
+                        }
+                    })
+                    .catch(err => console.error("Error loading filiere stats:", err));
+
+                // 2. By Year
+                fetch('/api/bibliothecaire/stats/reports/annee')
+                    .then(res => res.json())
+                    .then(data => {
+                        const labels = Object.keys(data).sort(); // Sort years
+                        const values = labels.map(y => data[y]);
+
+                        const chartContainer = document.getElementById('chartAnnee').parentNode;
+
+                        if (labels.length === 0) {
+                            chartContainer.innerHTML = '<div class="d-flex align-items-center justify-content-center h-100 text-muted small py-5"><i class="fas fa-calendar-times me-2"></i>Aucune donnée par année</div>';
+                        } else if (typeof Chart !== 'undefined') {
+                            const ctx = document.getElementById('chartAnnee').getContext('2d');
+                            new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    labels: labels,
+                                    datasets: [{
+                                        label: 'Nombre de Thèses',
+                                        data: values,
+                                        backgroundColor: '#8B5CF6',
+                                        borderRadius: 4
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                                }
+                            });
+                        }
+
+                        // Fill Raw Data (Always runs even if Chart fails)
+                        const rawContainer = document.getElementById('rawStatsContainer');
+                        if (rawContainer.innerText.includes('Chargement') || rawContainer.innerText.includes('Impossible')) {
+                            rawContainer.innerHTML = '';
+                        }
+
+                        // Simple listing
+                        let html = '<div class="col-md-4 mb-3"><h6 class="small text-muted fw-bold border-bottom pb-2">Par Année</h6><ul class="list-group list-group-flush">';
+                        if (labels.length === 0) {
+                            html += '<li class="list-group-item small text-muted">Aucune donnée annuelle.</li>';
+                        } else {
+                            labels.forEach(y => {
+                                html += `<li class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0">${y} <span class="badge bg-light text-dark rounded-pill">${data[y]}</span></li>`;
+                            });
+                        }
+                        html += '</ul></div>';
+                        rawContainer.innerHTML += html;
+                    })
+                    .catch(err => {
+                        console.error("Error loading year stats:", err);
+                        // document.getElementById('rawStatsContainer').innerHTML = "<div class='text-danger'>Erreur de chargement.</div>";
+                    });
+            }
+        </script>
+    </div>
+</body>
+
+</html>

@@ -151,12 +151,23 @@
                                     <h6 class="text-emerald fw-bold border-bottom pb-2">Informations Étudiant</h6>
                                 </div>
                                 <div class="col-12">
-                                    <label class="small fw-medium mb-1">Choisir un Étudiant Existant</label>
-                                    <select id="selectEtudiant" name="etudiantId" class="form-select mb-2"
-                                        onchange="toggleEtudiantFields()">
-                                        <option value="">-- Nouvel Étudiant --</option>
-                                        <option value="">Chargement...</option>
-                                    </select>
+                                    <label class="small fw-medium mb-1">Étudiant</label>
+                                    <div class="input-group mb-2">
+                                        <input type="text" id="displayEtudiant" class="form-control"
+                                            placeholder="Aucun étudiant sélectionné" readonly>
+                                        <button class="btn btn-outline-emerald" type="button"
+                                            onclick="openSelectEtudiantModal()">
+                                            <i class="fas fa-search me-1"></i> Choisir
+                                        </button>
+                                        <input type="hidden" id="etudiantId" name="etudiantId">
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="checkNewEtudiant"
+                                            onchange="toggleNewEtudiant()">
+                                        <label class="form-check-label extra-small" for="checkNewEtudiant">
+                                            Nouvel étudiant (si non trouvé dans la liste)
+                                        </label>
+                                    </div>
                                 </div>
                                 <div id="newEtudiantFields" class="row g-3 m-0 p-0">
                                     <div class="col-md-6">
@@ -177,9 +188,15 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="small fw-medium mb-1">Filière</label>
-                                        <select id="selectFiliere" name="filiereId" class="form-select">
-                                            <option value="">Chargement...</option>
-                                        </select>
+                                        <div class="input-group">
+                                            <input type="text" id="displayFiliereNew" class="form-control"
+                                                placeholder="Choisir..." readonly>
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                onclick="openSelectFiliereModal('new')">
+                                                <i class="fas fa-list"></i>
+                                            </button>
+                                            <input type="hidden" id="filiereIdNew" name="filiereId">
+                                        </div>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="small fw-medium mb-1">Année Académique</label>
@@ -193,12 +210,23 @@
                                     <h6 class="text-emerald fw-bold border-bottom pb-2">Informations Encadrant</h6>
                                 </div>
                                 <div class="col-12">
-                                    <label class="small fw-medium mb-1">Choisir un Encadrant Existant</label>
-                                    <select id="selectEncadrant" name="encadrantId" class="form-select mb-2"
-                                        onchange="toggleEncadrantFields()">
-                                        <option value="">-- Nouvel Encadrant --</option>
-                                        <option value="">Chargement...</option>
-                                    </select>
+                                    <label class="small fw-medium mb-1">Encadrant</label>
+                                    <div class="input-group mb-2">
+                                        <input type="text" id="displayEncadrant" class="form-control"
+                                            placeholder="Aucun encadrant sélectionné" readonly>
+                                        <button class="btn btn-outline-emerald" type="button"
+                                            onclick="openSelectEncadrantModal()">
+                                            <i class="fas fa-search me-1"></i> Choisir
+                                        </button>
+                                        <input type="hidden" id="encadrantId" name="encadrantId">
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="checkNewEncadrant"
+                                            onchange="toggleNewEncadrant()">
+                                        <label class="form-check-label extra-small" for="checkNewEncadrant">
+                                            Nouvel encadrant (si non trouvé)
+                                        </label>
+                                    </div>
                                 </div>
                                 <div id="newEncadrantFields" class="row g-3 m-0 p-0">
                                     <div class="col-md-4">
@@ -243,6 +271,10 @@
                                     <label class="small fw-medium mb-1">Résumé</label>
                                     <textarea name="resume" class="form-control" rows="3"></textarea>
                                 </div>
+                                <div class="col-12">
+                                    <label class="small fw-medium mb-1">Fichier PDF</label>
+                                    <input type="file" name="fichierPdf" class="form-control" accept=".pdf" required>
+                                </div>
                             </div>
                             <div class="text-end mt-4">
                                 <button type="button" class="btn btn-light rounded-pill px-4"
@@ -257,7 +289,92 @@
             </div>
         </div>
 
-        <!-- Modal Nouveau Encadrant -->
+        <!-- Modal Sélection Étudiant (Pour Dossier) -->
+        <div class="modal fade" id="modalSelectEtudiant" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
+                    <div class="modal-header border-0 pb-0">
+                        <h5 class="modal-title fw-bold text-forest">Choisir un Étudiant</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <input type="text" id="searchInputEtudiant" class="form-control mb-3"
+                            placeholder="Rechercher..." oninput="filterTable('tableSelectEtudiant', this.value)">
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Prénom</th>
+                                        <th>Nom</th>
+                                        <th>Matricule</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableSelectEtudiantBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Sélection Encadrant (Pour Dossier) -->
+        <div class="modal fade" id="modalSelectEncadrant" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
+                    <div class="modal-header border-0 pb-0">
+                        <h5 class="modal-title fw-bold text-forest">Choisir un Encadrant</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <input type="text" id="searchInputEncadrant" class="form-control mb-3"
+                            placeholder="Rechercher..." oninput="filterTable('tableSelectEncadrant', this.value)">
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Prénom</th>
+                                        <th>Nom</th>
+                                        <th>Email</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableSelectEncadrantBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Sélection Filière (Pour Dossier) -->
+        <div class="modal fade" id="modalSelectFiliere" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
+                    <div class="modal-header border-0 pb-0">
+                        <h5 class="modal-title fw-bold text-forest">Choisir une Filière</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <input type="text" id="searchInputFiliere" class="form-control mb-3" placeholder="Rechercher..."
+                            oninput="filterTable('tableSelectFiliere', this.value)">
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableSelectFiliereBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Nouveau Encadrant (Standalone) -->
         <div class="modal fade" id="modalEncadrant" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content border-0 shadow-lg" style="border-radius: 1.5rem;">
@@ -296,7 +413,7 @@
             </div>
         </div>
 
-        <!-- Modal Nouvel Étudiant -->
+        <!-- Modal Nouvel Étudiant (Standalone) -->
         <div class="modal fade" id="modalEtudiant" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content border-0 shadow-lg" style="border-radius: 1.5rem;">
@@ -346,59 +463,274 @@
         </div>
 
         <script th:inline="javascript">
+            // Etat global pour la sélection de filière (Mode 'new student' dans dossier)
+            let currentFiliereTargetId = null;
+            let currentFiliereDisplayId = null;
+
+            // --- Logique des Modals de Sélection (Tableaux) ---
+            function openSelectEtudiantModal() {
+                const modal = new bootstrap.Modal(document.getElementById('modalSelectEtudiant'));
+                modal.show();
+                loadSelectData('etudiants', 'tableSelectEtudiantBody');
+            }
+
+            function openSelectEncadrantModal() {
+                const modal = new bootstrap.Modal(document.getElementById('modalSelectEncadrant'));
+                modal.show();
+                loadSelectData('encadrants', 'tableSelectEncadrantBody');
+            }
+
+            function openSelectFiliereModal(targetSuffix) {
+                if (targetSuffix === 'new') {
+                    currentFiliereTargetId = 'filiereIdNew';
+                    currentFiliereDisplayId = 'displayFiliereNew';
+                }
+                const modal = new bootstrap.Modal(document.getElementById('modalSelectFiliere'));
+                modal.show();
+                loadSelectData('filieres', 'tableSelectFiliereBody');
+            }
+
+            function loadSelectData(type, tbodyId) {
+                const tbody = document.getElementById(tbodyId);
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center">Chargement...</td></tr>';
+
+                fetch('/api/' + type)
+                    .then(res => res.json())
+                    .then(data => {
+                        tbody.innerHTML = '';
+                        window['rawData_' + type] = data;
+                        renderTable(type, data, tbodyId);
+                    });
+            }
+
+            function renderTable(type, data, tbodyId) {
+                const tbody = document.getElementById(tbodyId);
+                tbody.innerHTML = '';
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">Aucune donnée</td></tr>';
+                    return;
+                }
+
+                data.forEach(item => {
+                    let row = '';
+                    if (type === 'etudiants') {
+                        row = `<td>${item.prenom}</td><td>${item.nom}</td><td>${item.matricule}</td>
+                               <td><button class="btn btn-sm btn-outline-forest" onclick="selectItem('etudiant', ${item.id}, '${item.prenom} ${item.nom}')">Choisir</button></td>`;
+                    } else if (type === 'encadrants') {
+                        row = `<td>${item.prenom}</td><td>${item.nom}</td><td>${item.email}</td>
+                               <td><button class="btn btn-sm btn-outline-forest" onclick="selectItem('encadrant', ${item.id}, '${item.prenom} ${item.nom}')">Choisir</button></td>`;
+                    } else if (type === 'filieres') {
+                        row = `<td>${item.nom}</td>
+                               <td><button class="btn btn-sm btn-outline-forest" onclick="selectItem('filiere', ${item.id}, '${item.nom}')">Choisir</button></td>`;
+                    }
+                    tbody.innerHTML += `<tr>${row}</tr>`;
+                });
+            }
+
+            function filterTable(tableId, query) {
+                query = query.toLowerCase();
+                const rows = document.querySelectorAll('#' + tableId + 'Body tr');
+                rows.forEach(row => {
+                    row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
+                });
+            }
+
+            function selectItem(type, id, nom) {
+                if (type === 'etudiant') {
+                    document.getElementById('etudiantId').value = id;
+                    document.getElementById('displayEtudiant').value = nom;
+                    document.getElementById('checkNewEtudiant').checked = false;
+                    toggleNewEtudiant();
+                    bootstrap.Modal.getInstance(document.getElementById('modalSelectEtudiant')).hide();
+                } else if (type === 'encadrant') {
+                    document.getElementById('encadrantId').value = id;
+                    document.getElementById('displayEncadrant').value = nom;
+                    document.getElementById('checkNewEncadrant').checked = false;
+                    toggleNewEncadrant();
+                    bootstrap.Modal.getInstance(document.getElementById('modalSelectEncadrant')).hide();
+                } else if (type === 'filiere') {
+                    if (currentFiliereTargetId) document.getElementById(currentFiliereTargetId).value = id;
+                    if (currentFiliereDisplayId) document.getElementById(currentFiliereDisplayId).value = nom;
+                    bootstrap.Modal.getInstance(document.getElementById('modalSelectFiliere')).hide();
+                }
+            }
+
+            // --- Gestion des Modals Principaux ---
+
             function openDepotModal() {
                 const modalEl = document.getElementById('modalDepot');
                 if (modalEl) {
                     const modal = new bootstrap.Modal(modalEl);
                     modal.show();
+                    // Reset fields for fresh entry
+                    document.getElementById('checkNewEtudiant').checked = false; // Default: Select existing
+                    toggleNewEtudiant();
+                    document.getElementById('checkNewEncadrant').checked = false; // Default: Select existing
+                    toggleNewEncadrant();
+
+                    document.getElementById('displayEtudiant').value = '';
+                    document.getElementById('displayEncadrant').value = '';
+                    document.getElementById('etudiantId').value = '';
+                    document.getElementById('encadrantId').value = '';
                 }
             }
 
+            function toggleNewEtudiant() {
+                const check = document.getElementById('checkNewEtudiant');
+                if (!check) return;
+                const isNew = check.checked;
+                const container = document.getElementById('newEtudiantFields');
+                const displayInput = document.getElementById('displayEtudiant');
+
+                if (container) {
+                    container.style.display = isNew ? "flex" : "none";
+                    const inputs = container.querySelectorAll('input, select');
+                    inputs.forEach(i => {
+                        if (i.id !== 'displayFiliereNew') i.required = isNew;
+                    });
+                }
+            }
+
+            function toggleNewEncadrant() {
+                const check = document.getElementById('checkNewEncadrant');
+                if (!check) return;
+                const isNew = check.checked;
+                const container = document.getElementById('newEncadrantFields');
+                if (container) {
+                    container.style.display = isNew ? "flex" : "none";
+                    const inputs = container.querySelectorAll('input, select');
+                    inputs.forEach(i => i.required = isNew);
+                }
+            }
+
+            // Standalone Modals (From dashboard buttons)
             function openEncadrantModal() {
                 const modalEl = document.getElementById('modalEncadrant');
-                if (modalEl) {
-                    const modal = new bootstrap.Modal(modalEl);
-                    modal.show();
-                }
+                if (modalEl) new bootstrap.Modal(modalEl).show();
             }
 
             function openEtudiantModal() {
                 const modalEl = document.getElementById('modalEtudiant');
                 if (modalEl) {
-                    // Charger les filières avant d'ouvrir le modal
                     const selFiliere = document.getElementById('selectFiliereEtudiant');
                     if (selFiliere) {
-                        fetch('/api/filieres')
-                            .then(res => res.json())
-                            .then(data => {
-                                selFiliere.innerHTML = '<option value="">Choisir une filière</option>';
-                                data.forEach(f => selFiliere.innerHTML += `<option value="${f.id}">${f.nom}</option>`);
-                            });
+                        fetch('/api/filieres').then(r => r.json()).then(d => {
+                            selFiliere.innerHTML = '<option value="">Choisir</option>';
+                            d.forEach(f => selFiliere.innerHTML += `<option value="${f.id}">${f.nom}</option>`);
+                        });
                     }
-                    const modal = new bootstrap.Modal(modalEl);
-                    modal.show();
+                    new bootstrap.Modal(modalEl).show();
                 }
             }
 
-            function toggleEtudiantFields() {
-                const val = document.getElementById('selectEtudiant').value;
-                const container = document.getElementById('newEtudiantFields');
-                if (container) {
-                    container.style.display = val === "" ? "flex" : "none";
-                    const inputs = container.querySelectorAll('input, select');
-                    inputs.forEach(i => i.required = (val === ""));
-                }
-            }
+            // --- Initialisation et Soumission ---
 
-            function toggleEncadrantFields() {
-                const val = document.getElementById('selectEncadrant').value;
-                const container = document.getElementById('newEncadrantFields');
-                if (container) {
-                    container.style.display = val === "" ? "flex" : "none";
-                    const inputs = container.querySelectorAll('input, select');
-                    inputs.forEach(i => i.required = (val === ""));
+            document.addEventListener('DOMContentLoaded', function () {
+                refreshDashboard();
+                toggleNewEtudiant();
+                toggleNewEncadrant();
+
+                const form = document.getElementById('formDepot');
+                if (form) {
+                    form.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        updateStatus('Enregistrement...', 'warning');
+
+                        const formData = new FormData();
+                        const rawData = Object.fromEntries(new FormData(this).entries());
+
+                        // Logic: If checkNewEtudiant is checked, we send explicit fields. 
+                        // If not, we rely on etudiantId.
+                        // The backend DossierDTO handles both.
+
+                        const dossierObj = {
+                            etudiantId: (!document.getElementById('checkNewEtudiant').checked && rawData.etudiantId) ? parseInt(rawData.etudiantId) : null,
+                            encadrantId: (!document.getElementById('checkNewEncadrant').checked && rawData.encadrantId) ? parseInt(rawData.encadrantId) : null,
+                            titre: rawData.titre,
+                            type: rawData.type,
+                            annee: parseInt(rawData.annee),
+                            resume: rawData.resume,
+                            // New fields
+                            nomEtudiant: rawData.nomEtudiant,
+                            prenomEtudiant: rawData.prenomEtudiant,
+                            matriculeEtudiant: rawData.matriculeEtudiant,
+                            emailEtudiant: rawData.emailEtudiant,
+                            filiereId: rawData.filiereId ? parseInt(rawData.filiereId) : null,
+                            anneeAcademique: rawData.anneeAcademique,
+                            nomEncadrant: rawData.nomEncadrant,
+                            prenomEncadrant: rawData.prenomEncadrant,
+                            emailEncadrant: rawData.emailEncadrant,
+                            gradeEncadrant: rawData.gradeEncadrant
+                        };
+
+                        formData.append('dossier', JSON.stringify(dossierObj));
+                        const fileInput = this.querySelector('input[name="fichierPdf"]');
+                        if (fileInput.files.length > 0) {
+                            formData.append('fichier', fileInput.files[0]);
+                        }
+
+                        fetch('/api/theses/depot', {
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(res => {
+                                if (res.ok) {
+                                    alert('Succès ! Dossier déposé.');
+                                    location.reload();
+                                } else {
+                                    return res.text().then(text => { throw new Error(text || res.statusText) });
+                                }
+                            })
+                            .catch(err => {
+                                alert('Erreur : ' + err.message);
+                                updateStatus('Connecté', 'success');
+                            });
+                    });
                 }
-            }
+
+                // Add handlers for formEtudiant and formEncadrant (Standalone)
+                const formEtu = document.getElementById('formEtudiant');
+                if (formEtu) {
+                    formEtu.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        const data = Object.fromEntries(new FormData(this));
+
+                        const payload = {
+                            prenom: data.prenom,
+                            nom: data.nom,
+                            matricule: data.matricule,
+                            email: data.email,
+                            anneeAcademique: data.anneeAcademique,
+                            filiere: { id: parseInt(data.filiereId) }
+                        };
+
+                        fetch('/api/etudiants', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        }).then(r => {
+                            if (r.ok) { alert('Étudiant ajouté'); location.reload(); }
+                            else alert('Erreur ajout étudiant');
+                        });
+                    });
+                }
+
+                const formEnc = document.getElementById('formEncadrant');
+                if (formEnc) {
+                    formEnc.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        const data = Object.fromEntries(new FormData(this));
+                        fetch('/api/encadrants', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        }).then(r => {
+                            if (r.ok) { alert('Encadrant ajouté'); location.reload(); }
+                            else alert('Erreur ajout encadrant');
+                        });
+                    });
+                }
+            });
 
             function updateStatus(text, color) {
                 const el = document.getElementById('connectionStatus');
@@ -409,190 +741,43 @@
             }
 
             function refreshDashboard() {
-                updateStatus('Chargement...', 'info');
-
                 const cacheBust = '?t=' + Date.now();
+                fetch('/api/aide/stats/summary' + cacheBust).then(r => r.json()).then(data => {
+                    document.getElementById('statEtudiants').innerText = data.totalEtudiants;
+                    document.getElementById('statEncadrants').innerText = data.totalEncadrants;
+                    document.getElementById('statFilieres').innerText = data.totalFilieres;
+                    document.getElementById('statUpdates').innerText = data.todayUpdates;
 
-                // 1. Statistiques
-                fetch('/api/aide/stats/summary' + cacheBust)
-                    .then(res => {
-                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                        return res.json();
-                    })
-                    .then(data => {
-                        document.getElementById('statEtudiants').innerText = data.totalEtudiants;
-                        document.getElementById('statEncadrants').innerText = data.totalEncadrants;
-                        document.getElementById('statFilieres').innerText = data.totalFilieres;
-                        document.getElementById('statUpdates').innerText = data.todayUpdates;
-
-                        const container = document.getElementById('recentInscriptions');
-                        if (container) {
-                            container.innerHTML = '';
-                            if (!data.recentDeposits || data.recentDeposits.length === 0) {
-                                container.innerHTML = '<div class="text-center py-4 text-muted">Aucun dépôt récent.</div>';
-                            } else {
-                                data.recentDeposits.forEach(d => {
-                                    const initials = d.nomEtudiant ? d.nomEtudiant.split(' ').map(n => n[0]).join('').toUpperCase() : '??';
-                                    container.innerHTML += `
-                                        <div class="list-group-item px-0 border-0 py-3 d-flex justify-content-between align-items-center transition-hover">
-                                            <div class="d-flex align-items-center">
-                                                <div class="avatar-emerald me-3 shadow-sm">${initials}</div>
-                                                <div>
-                                                    <p class="small fw-bold mb-0 text-forest">${d.nomEtudiant}</p>
-                                                    <p class="extra-small text-muted mb-0">${d.filiere}</p>
-                                                </div>
+                    const container = document.getElementById('recentInscriptions');
+                    if (container) {
+                        container.innerHTML = '';
+                        if (!data.recentDeposits || data.recentDeposits.length === 0) {
+                            container.innerHTML = '<div class="text-center py-4 text-muted">Aucun dépôt récent.</div>';
+                        } else {
+                            data.recentDeposits.forEach(d => {
+                                const initials = d.nomEtudiant ? d.nomEtudiant.split(' ').map(n => n[0]).join('').toUpperCase() : '??';
+                                container.innerHTML += `
+                                    <div class="list-group-item px-0 border-0 py-3 d-flex justify-content-between align-items-center transition-hover">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-emerald me-3 shadow-sm">${initials}</div>
+                                            <div>
+                                                <p class="small fw-bold mb-0 text-forest">${d.nomEtudiant}</p>
+                                                <p class="extra-small text-muted mb-0">${d.filiere}</p>
                                             </div>
-                                            <span class="badge bg-mint-lightest text-forest extra-small border-mint-soft">${d.date}</span>
                                         </div>
-                                    `;
-                                });
-                            }
+                                        <span class="badge bg-mint-lightest text-forest extra-small border-mint-soft">${d.date}</span>
+                                    </div>
+                                `;
+                            });
                         }
-                        updateStatus('Connecté', 'success');
-                    })
-                    .catch(err => {
-                        console.error('Erreur stats:', err);
-                        updateStatus('Erreur API', 'danger');
-                    });
-
-                // 2. Filières
-                fetch('/api/filieres' + cacheBust)
-                    .then(res => res.json())
-                    .then(data => {
-                        const sel = document.getElementById('selectFiliere');
-                        if (sel) {
-                            sel.innerHTML = '<option value="">Choisir une filière</option>';
-                            data.forEach(f => sel.innerHTML += `<option value="${f.id}">${f.nom}</option>`);
-                        }
-                    })
-                    .catch(err => console.error('Erreur filières:', err));
-
-                // 3. Étudiants
-                fetch('/api/etudiants' + cacheBust)
-                    .then(res => res.json())
-                    .then(data => {
-                        const sel = document.getElementById('selectEtudiant');
-                        if (sel) {
-                            sel.innerHTML = '<option value="">-- Nouvel Étudiant --</option>';
-                            data.forEach(e => sel.innerHTML += `<option value="${e.id}">${e.prenom} ${e.nom} (${e.matricule})</option>`);
-                        }
-                    })
-                    .catch(err => console.error('Erreur étudiants:', err));
-
-                // 4. Encadrants
-                fetch('/api/encadrants' + cacheBust)
-                    .then(res => res.json())
-                    .then(data => {
-                        const sel = document.getElementById('selectEncadrant');
-                        if (sel) {
-                            sel.innerHTML = '<option value="">-- Nouvel Encadrant --</option>';
-                            data.forEach(e => sel.innerHTML += `<option value="${e.id}">${e.prenom} ${e.nom} (${e.grade})</option>`);
-                        }
-                    })
-                    .catch(err => console.error('Erreur encadrants:', err));
+                    }
+                    updateStatus('Connecté', 'success');
+                }).catch(err => {
+                    console.error(err);
+                    updateStatus('Erreur API', 'danger');
+                });
             }
 
-            document.addEventListener('DOMContentLoaded', function () {
-                refreshDashboard();
-                const form = document.getElementById('formDepot');
-                if (form) {
-                    form.addEventListener('submit', function (e) {
-                        e.preventDefault();
-                        updateStatus('Enregistrement...', 'warning');
-                        const formData = new FormData(this);
-                        const data = Object.fromEntries(formData.entries());
-
-                        if (data.etudiantId) data.etudiantId = parseInt(data.etudiantId);
-                        else delete data.etudiantId;
-                        if (data.encadrantId) data.encadrantId = parseInt(data.encadrantId);
-                        else delete data.encadrantId;
-                        if (data.filiereId) data.filiereId = parseInt(data.filiereId);
-                        data.annee = parseInt(data.annee);
-
-                        fetch('/api/theses/depot', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(data)
-                        })
-                            .then(res => {
-                                if (res.ok) {
-                                    alert('Succès !');
-                                    location.reload();
-                                } else {
-                                    throw new Error(`Dépôt échoué (${res.status})`);
-                                }
-                            })
-                            .catch(err => {
-                                alert('Erreur : ' + err.message);
-                                updateStatus('Connecté', 'success');
-                            });
-                    });
-                }
-
-                // Gérer l'ajout d'encadrant
-                const formEnc = document.getElementById('formEncadrant');
-                if (formEnc) {
-                    formEnc.addEventListener('submit', function (e) {
-                        e.preventDefault();
-                        updateStatus('Enregistrement...', 'warning');
-                        const formData = new FormData(this);
-                        const data = Object.fromEntries(formData.entries());
-
-                        fetch('/api/encadrants', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(data)
-                        })
-                            .then(res => {
-                                if (res.ok) {
-                                    alert('Encadrant ajouté avec succès !');
-                                    location.reload();
-                                } else {
-                                    throw new Error('Erreur lors de l\'ajout');
-                                }
-                            })
-                            .catch(err => {
-                                alert(err.message);
-                                updateStatus('Connecté', 'success');
-                            });
-                    });
-                }
-
-                // Gérer l'ajout d'étudiant
-                const formEtu = document.getElementById('formEtudiant');
-                if (formEtu) {
-                    formEtu.addEventListener('submit', function (e) {
-                        e.preventDefault();
-                        updateStatus('Enregistrement...', 'warning');
-                        const formData = new FormData(this);
-                        const data = Object.fromEntries(formData.entries());
-
-                        // Convertir filiereId en objet filiere
-                        if (data.filiereId) {
-                            data.filiere = { id: parseInt(data.filiereId) };
-                            delete data.filiereId;
-                        }
-
-                        fetch('/api/etudiants', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(data)
-                        })
-                            .then(res => {
-                                if (res.ok) {
-                                    alert('Étudiant ajouté avec succès !');
-                                    location.reload();
-                                } else {
-                                    throw new Error('Erreur lors de l\'ajout');
-                                }
-                            })
-                            .catch(err => {
-                                alert(err.message);
-                                updateStatus('Connecté', 'success');
-                            });
-                    });
-                }
-            });
         </script>
     </div>
 </body>

@@ -41,4 +41,8 @@ public class EtudiantService {
     public void supprimerEtudiant(Long id) {
         etudiantRepository.deleteById(id);
     }
+
+    public List<Etudiant> rechercherEtudiants(String motCle) {
+        return etudiantRepository.findByNomContainingIgnoreCaseOrPrenomContainingIgnoreCase(motCle, motCle);
+    }
 }

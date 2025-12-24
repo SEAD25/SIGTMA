@@ -41,9 +41,29 @@ public class ViewController {
         return "bibliothecaire/dashboard";
     }
 
+    @GetMapping("/bibliothecaire/catalogue")
+    public String bibliothecaireCatalogue() {
+        return "bibliothecaire/catalogue";
+    }
+
+    @GetMapping("/bibliothecaire/rapports")
+    public String bibliothecaireRapports() {
+        return "bibliothecaire/rapports";
+    }
+
+    @GetMapping("/bibliothecaire/search")
+    public String bibliothecaireSearch() {
+        return "bibliothecaire/search";
+    }
+
     @GetMapping("/aide-bibliothecaire/dashboard")
     public String aideBibliothecaireDashboard() {
         return "aide-bibliothecaire/dashboard";
+    }
+
+    @GetMapping("/aide-bibliothecaire/etudiants")
+    public String aideBibliothecaireEtudiants() {
+        return "aide-bibliothecaire/etudiants";
     }
 
     @GetMapping("/etudiant/dashboard")

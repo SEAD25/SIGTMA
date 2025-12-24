@@ -16,9 +16,14 @@ public class TheseMemoireController {
     @Autowired
     private TheseMemoireService theseMemoireService;
 
-    @PostMapping("/depot")
-    public TheseMemoire deposerDossier(@RequestBody DossierDTO dossierDTO) {
-        return theseMemoireService.deposerDossier(dossierDTO);
+    @PostMapping(path = "/depot", consumes = { org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE })
+    public TheseMemoire deposerDossier(
+            @RequestPart("dossier") String dossierJson,
+            @RequestPart("fichier") org.springframework.web.multipart.MultipartFile fichier)
+            throws com.fasterxml.jackson.core.JsonProcessingException {
+        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        DossierDTO dossierDTO = mapper.readValue(dossierJson, DossierDTO.class);
+        return theseMemoireService.deposerDossier(dossierDTO, fichier);
     }
 
     @PostMapping(consumes = { "multipart/form-data" })
@@ -66,12 +71,38 @@ public class TheseMemoireController {
     }
 
     @GetMapping("/recherche")
-    public List<TheseMemoire> rechercher(@RequestParam String motCle) {
-        return theseMemoireService.rechercher(motCle);
+    public List<TheseMemoire> rechercher(
+            @RequestParam(required = false) String motCle,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate date) {
+        return theseMemoireService.rechercher(motCle, date);
     }
 
     @GetMapping("/{id}")
     public TheseMemoire getThese(@PathVariable Long id) {
         return theseMemoireService.trouverThese(id);
+    }
+
+    @GetMapping("/files/{filename:.+}")
+    @ResponseBody
+    public org.springframework.http.ResponseEntity<org.springframework.core.io.Resource> serveFile(
+            @PathVariable String filename,
+            @RequestParam(defaultValue = "false") boolean download) {
+        try {
+            java.nio.file.Path file = java.nio.file.Paths.get("uploads").resolve(filename);
+            if (!java.nio.file.Files.exists(file)) {
+                return org.springframework.http.ResponseEntity.notFound().build();
+            }
+            org.springframework.core.io.Resource resource = new org.springframework.core.io.UrlResource(file.toUri());
+
+            String disposition = download ? "attachment" : "inline";
+
+            return org.springframework.http.ResponseEntity.ok()
+                    .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                    .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION,
+                            disposition + "; filename=\"" + resource.getFilename() + "\"")
+                    .body(resource);
+        } catch (Exception e) {
+            return org.springframework.http.ResponseEntity.internalServerError().build();
+        }
     }
 }

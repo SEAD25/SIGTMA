@@ -28,4 +28,8 @@ public class EncadrantService {
     public void supprimerEncadrant(Long id) {
         encadrantRepository.deleteById(id);
     }
+
+    public List<Encadrant> rechercherEncadrants(String motCle) {
+        return encadrantRepository.findByNomContainingIgnoreCaseOrPrenomContainingIgnoreCase(motCle, motCle);
+    }
 }

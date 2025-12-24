@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layout/base :: html(title='Liste des Dossiers | SIGTMA', activePage='etudiants', pageTitle='Liste des Étudiants & Dossiers')}">
+
+<head></head>
+
+<body>
+    <div th:fragment="content">
+        <div class="row mb-4 align-items-end">
+            <div class="col-md-5">
+                <h5 class="fw-bold text-forest">Annuaire des Dossiers</h5>
+                <p class="text-muted extra-small mb-0">Recherchez et consultez les thèses et mémoires déposés.</p>
+            </div>
+            <div class="col-md-7">
+                <div class="d-flex gap-2 justify-content-end">
+                    <!-- Date Filter -->
+                    <div class="input-group shadow-sm" style="width: 180px;">
+                        <span class="input-group-text bg-white border-end-0 text-muted ps-3"><i
+                                class="far fa-calendar"></i></span>
+                        <input type="date" id="dateFilter" class="form-control border-start-0 ps-0"
+                            onchange="searchDossiers()">
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="input-group shadow-sm" style="width: 300px;">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i
+                                class="fas fa-search"></i></span>
+                        <input type="text" id="searchInput" class="form-control border-start-0 ps-0"
+                            placeholder="Nom, Filière, Titre..." oninput="searchDossiers()">
+                    </div>
+
+                    <!-- Print Button -->
+                    <button class="btn btn-emerald shadow-sm" onclick="printList()">
+                        <i class="fas fa-print me-2"></i>Imprimer/PDF
+                    </button>
+                    <!-- Export CSV Button -->
+                    <!-- <button class="btn btn-outline-forest shadow-sm" onclick="exportCSV()">
+                        <i class="fas fa-file-csv"></i>
+                    </button> -->
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden" id="printableArea">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="dossiersTable">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4 text-secondary text-uppercase extra-small fw-bold" style="width: 50px;">N°
+                            </th>
+                            <th class="text-secondary text-uppercase extra-small fw-bold">Date Dépôt</th>
+                            <th class="text-secondary text-uppercase extra-small fw-bold">Étudiant</th>
+                            <th class="text-secondary text-uppercase extra-small fw-bold">Filière</th>
+                            <th class="text-secondary text-uppercase extra-small fw-bold">Titre / Sujet</th>
+                            <th class="text-secondary text-uppercase extra-small fw-bold">Encadrant</th>
+                            <th class="text-secondary text-uppercase extra-small fw-bold">Statut</th>
+                            <th class="text-end pe-4 text-secondary text-uppercase extra-small fw-bold hide-print">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td colspan="8" class="text-center py-5 text-muted">Chargement des données...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Styles pour l'impression -->
+        <style>
+            @media print {
+                body * {
+                    visibility: hidden;
+                }
+
+                #printableArea,
+                #printableArea * {
+                    visibility: visible;
+                }
+
+                #printableArea {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    border: none !important;
+                    box-shadow: none !important;
+                }
+
+                .hide-print {
+                    display: none !important;
+                }
+
+                .table {
+                    border-collapse: collapse !important;
+                }
+
+                .table td,
+                .table th {
+                    border: 1px solid #ddd !important;
+                    padding: 8px !important;
+                }
+
+                /* Badge styling fix for print */
+                .badge {
+                    border: 1px solid #000;
+                    color: #000 !important;
+                    background: transparent !important;
+                }
+            }
+        </style>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                loadDossiers();
+            });
+
+            let debounceTimer;
+            function searchDossiers() {
+                const query = document.getElementById('searchInput').value;
+                const date = document.getElementById('dateFilter').value;
+
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    loadDossiers(query, date);
+                }, 300);
+            }
+
+            function loadDossiers(query = '', date = '') {
+                let url = '/api/theses/recherche?';
+                const params = new URLSearchParams();
+                if (query) params.append('motCle', query);
+                if (date) params.append('date', date);
+
+                // If no params, default to /api/theses (all) but filtered manually if needed or backend handles empty params?
+                // Our backend handles optional params. If both empty, it calls rechercher("", null) -> findAll
+
+                fetch(url + params.toString())
+                    .then(res => res.json())
+                    .then(data => {
+                        const tbody = document.getElementById('tableBody');
+                        tbody.innerHTML = '';
+
+                        if (data.length === 0) {
+                            tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-muted">Aucun résultat trouvé.</td></tr>`;
+                            return;
+                        }
+
+                        data.forEach((d, index) => {
+                            const etudiantName = d.etudiant ? `${d.etudiant.prenom} ${d.etudiant.nom}` : 'N/A';
+                            const matricule = d.etudiant ? d.etudiant.matricule : '';
+                            const filiere = (d.etudiant && d.etudiant.filiere) ? d.etudiant.filiere.nom : '-';
+                            const encadrantName = d.encadrant ? `${d.encadrant.grade} ${d.encadrant.prenom} ${d.encadrant.nom}` : '-';
+                            const dateDepot = d.dateDeDepot || '-';
+
+                            // Badge couleur statut
+                            let statusBadge = '';
+                            if (d.status === 'VALIDEE') statusBadge = '<span class="badge bg-success-subtle text-success rounded-pill">Validée</span>';
+                            else if (d.status === 'REJETEE') statusBadge = '<span class="badge bg-danger-subtle text-danger rounded-pill">Rejetée</span>';
+                            else statusBadge = '<span class="badge bg-warning-subtle text-warning rounded-pill">En Attente</span>';
+
+                            // Boutons d'action
+                            let actionBtns = '';
+                            if (d.fichier) {
+                                actionBtns = `
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a href="/api/theses/files/${d.fichier}" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill" title="Afficher"><i class="fas fa-eye"></i></a>
+                                        <a href="/api/theses/files/${d.fichier}?download=true" class="btn btn-sm btn-danger rounded-pill" title="Télécharger"><i class="fas fa-download"></i></a>
+                                    </div>`;
+                            } else {
+                                actionBtns = `<span class="text-muted extra-small">Aucun fichier</span>`;
+                            }
+
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td class="ps-4 text-muted fw-bold extra-small">${index + 1}</td>
+                                    <td class="small fw-medium text-dark">${dateDepot}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm bg-mint-lightest text-forest rounded-circle me-3 d-flex align-items-center justify-content-center fw-bold hide-print">
+                                                ${etudiantName.charAt(0)}
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold text-dark">${etudiantName}</div>
+                                                <div class="extra-small text-muted">${matricule}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-light text-dark border">${filiere}</span></td>
+                                    <td style="max-width: 200px;">
+                                        <div class="text-truncate fw-medium" title="${d.titre}">${d.titre}</div>
+                                        <div class="extra-small text-muted">${d.type} - ${d.annee}</div>
+                                    </td>
+                                    <td>
+                                        <div class="small text-dark">${encadrantName}</div>
+                                    </td>
+                                    <td>${statusBadge}</td>
+                                    <td class="text-end pe-4 hide-print">
+                                        ${actionBtns}
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    })
+                    .catch(err => {
+                        document.getElementById('tableBody').innerHTML = `<tr><td colspan="8" class="text-center py-5 text-danger">Erreur de chargement: ${err.message}</td></tr>`;
+                    });
+            }
+
+            function printList() {
+                window.print();
+            }
+        </script>
+    </div>
+</body>
+
+</html>

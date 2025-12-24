@@ -30,7 +30,7 @@ public class TheseMemoireService {
     @Autowired
     private FiliereRepository filiereRepository;
 
-    public TheseMemoire deposerDossier(DossierDTO dto) {
+    public TheseMemoire deposerDossier(DossierDTO dto, org.springframework.web.multipart.MultipartFile fichier) {
         // 1. Rechercher ou créer l'étudiant
         Etudiant etudiant;
         if (dto.getEtudiantId() != null) {
@@ -80,6 +80,22 @@ public class TheseMemoireService {
         these.setEtudiant(etudiant);
         these.setEncadrant(encadrant);
 
+        // Sauvegarde du fichier
+        if (fichier != null && !fichier.isEmpty()) {
+            try {
+                String fileName = System.currentTimeMillis() + "_" + fichier.getOriginalFilename();
+                java.nio.file.Path uploadPath = java.nio.file.Paths.get("uploads");
+                if (!java.nio.file.Files.exists(uploadPath)) {
+                    java.nio.file.Files.createDirectories(uploadPath);
+                }
+                java.nio.file.Files.copy(fichier.getInputStream(), uploadPath.resolve(fileName),
+                        java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                these.setFichier(fileName);
+            } catch (java.io.IOException e) {
+                throw new RuntimeException("Erreur lors du téléchargement du fichier", e);
+            }
+        }
+
         return theseMemoireRepository.save(these);
     }
 
@@ -99,10 +115,10 @@ public class TheseMemoireService {
         return theseMemoireRepository.findById(id).orElse(null);
     }
 
-    public List<TheseMemoire> rechercher(String motCle) {
-        if (motCle != null && !motCle.isEmpty()) {
-            // Nécessite la méthode dans le Repository !
-            return theseMemoireRepository.findByTitreContainingIgnoreCase(motCle);
+    public List<TheseMemoire> rechercher(String motCle, LocalDate date) {
+        if ((motCle != null && !motCle.isEmpty()) || date != null) {
+            String term = (motCle == null) ? "" : motCle;
+            return theseMemoireRepository.rechercherAvecDate(term, date);
         }
         return theseMemoireRepository.findAll();
     }

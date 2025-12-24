@@ -34,4 +34,9 @@ public class EncadrantController {
     public void supprimerEncadrant(@PathVariable Long id) {
         encadrantService.supprimerEncadrant(id);
     }
+
+    @GetMapping("/recherche")
+    public List<Encadrant> rechercher(@RequestParam String motCle) {
+        return encadrantService.rechercherEncadrants(motCle);
+    }
 }

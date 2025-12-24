@@ -63,6 +63,18 @@
                             </a>
                         </li>
                         <li class="nav-item" sec:authorize="hasRole('BIBLIOTHECAIRE')">
+                            <a class="nav-link" th:href="@{/bibliothecaire/catalogue}"
+                                th:classappend="${activePage == 'catalogue' ? 'active' : ''}">
+                                <i class="fas fa-archive"></i> Archives & Catalogue
+                            </a>
+                        </li>
+                        <li class="nav-item" sec:authorize="hasRole('BIBLIOTHECAIRE')">
+                            <a class="nav-link" th:href="@{/bibliothecaire/rapports}"
+                                th:classappend="${activePage == 'rapports' ? 'active' : ''}">
+                                <i class="fas fa-chart-pie"></i> Rapports
+                            </a>
+                        </li>
+                        <li class="nav-item" sec:authorize="hasRole('BIBLIOTHECAIRE')">
                             <a class="nav-link" th:href="@{/bibliothecaire/search}"
                                 th:classappend="${activePage == 'search' ? 'active' : ''}">
                                 <i class="fas fa-search"></i> Recherche Avancée
@@ -79,7 +91,7 @@
                         <li class="nav-item" sec:authorize="hasRole('AIDE_BIBLIOTHECAIRE')">
                             <a class="nav-link" th:href="@{/aide-bibliothecaire/etudiants}"
                                 th:classappend="${activePage == 'etudiants' ? 'active' : ''}">
-                                <i class="fas fa-user-graduate"></i> Étudiants
+                                <i class="fas fa-user-graduate"></i> Liste des Dossiers
                             </a>
                         </li>
                     </ul>

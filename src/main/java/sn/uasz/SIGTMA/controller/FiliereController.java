@@ -34,4 +34,9 @@ public class FiliereController {
     public Filiere modifierFiliere(@PathVariable Long id, @RequestBody Filiere filiere) {
         return filiereService.modifierFiliere(id, filiere);
     }
+
+    @GetMapping("/recherche")
+    public List<Filiere> rechercher(@RequestParam String motCle) {
+        return filiereService.rechercherFilieres(motCle);
+    }
 }
