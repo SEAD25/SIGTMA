@@ -13,6 +13,9 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "etudiant_id", "type" })
+})
 public class TheseMemoire {
 
     @Id
@@ -41,7 +44,7 @@ public class TheseMemoire {
     @ManyToOne
     private Encadrant encadrant;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "etudiant_id")
     private Etudiant etudiant;
 }

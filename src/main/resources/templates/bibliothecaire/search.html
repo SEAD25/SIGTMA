@@ -134,31 +134,43 @@
 
                     const etudiantName = t.etudiant ? `${t.etudiant.prenom} ${t.etudiant.nom}` : 'N/A';
 
-                    let actionsHtml = `<div class="d-flex justify-content-end gap-2">`;
+                    let actionsHtml = '-';
                     if (t.fichier) {
-                        actionsHtml += `<a href="/api/theses/files/${t.fichier}" target="_blank" class="btn btn-sm btn-outline-forest rounded-pill" title="Afficher">
-                                            <i class="fas fa-eye"></i>
-                                        </a>`;
-                        actionsHtml += `<a href="/api/theses/files/${t.fichier}?download=true" class="btn btn-sm btn-forest rounded-pill" title="Télécharger">
-                                            <i class="fas fa-download"></i>
-                                        </a>`;
-                    } else {
-                        actionsHtml += `<span class="text-muted small">Aucun fichier</span>`;
+                        actionsHtml = `
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-emerald rounded-pill px-4 shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    Options
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-custom border-0 rounded-4">
+                                    <li><a class="dropdown-item py-2 px-3 small" href="/api/theses/files/${t.fichier}" target="_blank">
+                                        <i class="fas fa-eye me-2 text-emerald"></i> Consulter
+                                    </a></li>
+                                    <li><a class="dropdown-item py-2 px-3 small" href="/api/theses/files/${t.fichier}?download=true">
+                                        <i class="fas fa-download me-2 text-emerald"></i> Télécharger
+                                    </a></li>
+                                </ul>
+                            </div>`;
                     }
-                    actionsHtml += `</div>`;
 
                     tbody.innerHTML += `
-                        <tr class="animate-fade-in">
-                            <td class="ps-4 text-muted small">#${t.id}</td>
-                            <td>
-                                <div class="fw-bold text-dark">${t.titre}</div>
-                                <div class="extra-small text-muted">${t.resume ? t.resume.substring(0, 50) + '...' : ''}</div>
+                        <tr class="transition-hover">
+                            <td class="ps-4 text-forest fw-bold opacity-50">#${t.id}</td>
+                            <td style="max-width:300px;">
+                                <div class="fw-bold text-dark text-truncate" title="${t.titre}">${t.titre}</div>
+                                <div class="extra-small text-muted text-truncate">${t.resume || ''}</div>
                             </td>
-                            <td class="small">${etudiantName}</td>
-                            <td><span class="badge bg-light text-dark border rounded-pill">${t.annee}</span></td>
-                            <td><span class="badge bg-secondary-subtle text-secondary rounded-pill">${t.type}</span></td>
-                            <td><span class="badge ${statusClass} rounded-pill">${t.status}</span></td>
-                            <td class="pe-4">${actionsHtml}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-emerald me-2" style="width: 28px; height: 28px; font-size: 9px;">
+                                        ${t.etudiant ? t.etudiant.nom[0] : '?'}
+                                    </div>
+                                    <span class="small fw-medium">${etudiantName}</span>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-light text-dark border-0 rounded-pill px-3">${t.annee}</span></td>
+                            <td><span class="badge bg-soft-emerald text-emerald rounded-pill px-3">${t.type}</span></td>
+                            <td><span class="badge ${statusClass} rounded-pill px-3">${t.status}</span></td>
+                            <td class="text-end pe-4">${actionsHtml}</td>
                         </tr>
                     `;
                 });

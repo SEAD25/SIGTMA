@@ -13,13 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import sn.uasz.SIGTMA.service.CustomUserDetailsService;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
-
-    // Injection du service utilisateur par constructeur
     private final CustomAuthenticationSuccessHandler successHandler;
 
     public SecurityConfig(CustomUserDetailsService userDetailsService,
@@ -31,7 +29,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Optionnel: activer pour plus de sécurité en prod
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/login", "/register", "/api/utilisateurs/inscription").permitAll()
@@ -55,14 +53,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        // CORRECTION : Instanciation avec le UserDetailsService en paramètre pour
-        // éviter l'erreur
+    public AuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
-
-        // Configuration de l'encodeur de mot de passe (BCrypt)
-        provider.setPasswordEncoder(passwordEncoder());
-
+        provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }
 

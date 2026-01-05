@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import sn.uasz.SIGTMA.model.TheseMemoire;
 import sn.uasz.SIGTMA.dto.DossierDTO;
+import sn.uasz.SIGTMA.service.PdfService;
 import sn.uasz.SIGTMA.service.TheseMemoireService;
 
 import java.util.List;
@@ -15,6 +16,33 @@ public class TheseMemoireController {
 
     @Autowired
     private TheseMemoireService theseMemoireService;
+
+    @Autowired
+    private PdfService pdfService;
+
+    @GetMapping("/{id}/attestation")
+    public org.springframework.http.ResponseEntity<byte[]> getAttestation(@PathVariable Long id) {
+        TheseMemoire these = theseMemoireService.trouverThese(id);
+        if (these == null)
+            return org.springframework.http.ResponseEntity.notFound().build();
+
+        java.util.Map<String, Object> data = new java.util.HashMap<>();
+        data.put("type", these.getType());
+        data.put("nomEtudiant", these.getEtudiant().getPrenom() + " " + these.getEtudiant().getNom());
+        data.put("filiere",
+                these.getEtudiant().getFiliere() != null ? these.getEtudiant().getFiliere().getNom() : "N/A");
+        data.put("titre", these.getTitre());
+        data.put("date",
+                java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy").format(java.time.LocalDate.now()));
+
+        byte[] pdf = pdfService.generatePdfFromHtml("pdf/attestation", data);
+
+        return org.springframework.http.ResponseEntity.ok()
+                .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"attestation_depot_" + id + ".pdf\"")
+                .body(pdf);
+    }
 
     @PostMapping(path = "/depot", consumes = { org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE })
     public TheseMemoire deposerDossier(

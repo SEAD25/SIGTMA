@@ -22,48 +22,54 @@ import org.slf4j.LoggerFactory;
 @CrossOrigin("*")
 public class AideStatsController {
 
-    @Autowired
-    private EtudiantRepository etudiantRepository;
+        @Autowired
+        private EtudiantRepository etudiantRepository;
 
-    @Autowired
-    private EncadrantRepository encadrantRepository;
+        @Autowired
+        private EncadrantRepository encadrantRepository;
 
-    @Autowired
-    private FiliereRepository filiereRepository;
+        @Autowired
+        private FiliereRepository filiereRepository;
 
-    @Autowired
-    private TheseMemoireRepository theseRepository;
+        @Autowired
+        private TheseMemoireRepository theseRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(AideStatsController.class);
+        private static final Logger logger = LoggerFactory.getLogger(AideStatsController.class);
 
-    @GetMapping("/summary")
-    public Map<String, Object> getSummary() {
-        Map<String, Object> stats = new HashMap<>();
-        stats.put("totalEtudiants", etudiantRepository.count());
-        stats.put("totalEncadrants", encadrantRepository.count());
-        stats.put("totalFilieres", filiereRepository.count());
-        stats.put("todayUpdates", theseRepository.countByDateDeDepot(java.time.LocalDate.now()));
+        @GetMapping("/summary")
+        public Map<String, Object> getSummary() {
+                Map<String, Object> stats = new HashMap<>();
+                stats.put("totalEtudiants", etudiantRepository.count());
+                stats.put("totalEncadrants", encadrantRepository.count());
+                stats.put("totalFilieres", filiereRepository.count());
+                stats.put("todayUpdates", theseRepository.countByDateDeDepot(java.time.LocalDate.now()));
 
-        logger.info("Aide Stats - Etudiants: {}, Encadrants: {}, Filieres: {}, Today: {}",
-                stats.get("totalEtudiants"), stats.get("totalEncadrants"), stats.get("totalFilieres"),
-                stats.get("todayUpdates"));
+                logger.info("Aide Stats - Etudiants: {}, Encadrants: {}, Filieres: {}, Today: {}",
+                                stats.get("totalEtudiants"), stats.get("totalEncadrants"), stats.get("totalFilieres"),
+                                stats.get("todayUpdates"));
 
-        List<Map<String, Object>> recentData = theseRepository.findTop5ByOrderByDateDeDepotDesc().stream()
-                .map(t -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("nomEtudiant",
-                            t.getEtudiant() != null ? (t.getEtudiant().getPrenom() + " " + t.getEtudiant().getNom())
-                                    : "Inconnu");
-                    map.put("filiere",
-                            (t.getEtudiant() != null && t.getEtudiant().getFiliere() != null)
-                                    ? t.getEtudiant().getFiliere().getNom()
-                                    : "-");
-                    map.put("date", t.getDateDeDepot() != null ? t.getDateDeDepot().toString() : "-");
-                    return map;
-                })
-                .collect(Collectors.toList());
+                List<Map<String, Object>> recentData = theseRepository.findTop5ByOrderByDateDeDepotDesc().stream()
+                                .map(t -> {
+                                        Map<String, Object> map = new HashMap<>();
+                                        map.put("nomEtudiant",
+                                                        t.getEtudiant() != null
+                                                                        ? (t.getEtudiant().getPrenom() + " "
+                                                                                        + t.getEtudiant().getNom())
+                                                                        : "Inconnu");
+                                        map.put("filiere",
+                                                        (t.getEtudiant() != null
+                                                                        && t.getEtudiant().getFiliere() != null)
+                                                                                        ? t.getEtudiant().getFiliere()
+                                                                                                        .getNom()
+                                                                                        : "-");
+                                        map.put("date", t.getDateDeDepot() != null ? t.getDateDeDepot().toString()
+                                                        : "-");
+                                        map.put("id", t.getId());
+                                        return map;
+                                })
+                                .collect(Collectors.toList());
 
-        stats.put("recentDeposits", recentData);
-        return stats;
-    }
+                stats.put("recentDeposits", recentData);
+                return stats;
+        }
 }

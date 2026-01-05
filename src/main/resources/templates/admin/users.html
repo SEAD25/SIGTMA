@@ -6,8 +6,8 @@
 
 <body>
     <div th:fragment="content">
-        <div class="card p-4 shadow-sm border-0">
-            <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="card p-4 shadow-sm border-0 rounded-4">
+            <div class="d-flex justify-content-between align-items-center mb-4 px-2">
                 <div>
                     <h5 class="fw-bold mb-0 text-forest">Comptes Utilisateurs</h5>
                     <p class="small text-muted mb-0">Gérez les accès du personnel de la bibliothèque</p>
@@ -17,22 +17,23 @@
                 </button>
             </div>
 
-            <div class="table-responsive">
+            <div class="table-responsive px-2">
                 <table class="table table-hover align-middle">
-                    <thead class="bg-light">
+                    <thead>
                         <tr>
-                            <th>Identité</th>
-                            <th>Email</th>
-                            <th>Rôle</th>
-                            <th>Téléphone</th>
-                            <th class="text-end">Actions</th>
+                            <th class="ps-3 text-secondary text-uppercase extra-small fw-bold border-0">Identité</th>
+                            <th class="text-secondary text-uppercase extra-small fw-bold border-0">Email</th>
+                            <th class="text-secondary text-uppercase extra-small fw-bold border-0">Rôle</th>
+                            <th class="text-secondary text-uppercase extra-small fw-bold border-0">Téléphone</th>
+                            <th class="text-end pe-3 text-secondary text-uppercase extra-small fw-bold border-0">Actions
+                            </th>
                         </tr>
                     </thead>
                     <tbody id="tableUsers">
                         <tr>
-                            <td colspan="5" class="text-center py-5 text-muted small">
-                                <div class="spinner-border spinner-border-sm text-emerald me-2" role="status"></div>
-                                Chargement des utilisateurs...
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <div class="spinner-border spinner-border-sm text-emerald me-2"></div> Chargement des
+                                utilisateurs...
                             </td>
                         </tr>
                     </tbody>

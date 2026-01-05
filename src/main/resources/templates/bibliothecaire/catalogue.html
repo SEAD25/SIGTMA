@@ -57,6 +57,61 @@
             </div>
         </div>
 
+        <style>
+            @media print {
+
+                /* Masquer tout l'UI par défaut */
+                body * {
+                    visibility: hidden;
+                    background: none !important;
+                }
+
+                /* Afficher uniquement la carte du tableau */
+                .table-responsive,
+                .table-responsive * {
+                    visibility: visible;
+                }
+
+                .table-responsive {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                }
+
+                /* Masquer sidebar, navbar et boutons d'action */
+                #sidebar,
+                .navbar,
+                .row,
+                .card-header,
+                .no-print,
+                .btn,
+                .input-group,
+                .dropdown {
+                    display: none !important;
+                }
+
+                /* Optimisation PDF */
+                .table {
+                    border-collapse: collapse !important;
+                    width: 100% !important;
+                }
+
+                .table th,
+                .table td {
+                    border: 1px solid #dee2e6 !important;
+                    padding: 8px !important;
+                }
+
+                .text-forest {
+                    color: #000 !important;
+                }
+
+                .avatar-emerald {
+                    display: none !important;
+                }
+            }
+        </style>
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 loadCatalogue();
@@ -98,25 +153,41 @@
                             const filiere = (d.etudiant && d.etudiant.filiere) ? d.etudiant.filiere.nom : '-';
                             const encadrantName = d.encadrant ? `${d.encadrant.grade} ${d.encadrant.prenom} ${d.encadrant.nom}` : '-';
 
-                            // Boutons d'action
+                            // Bouton d'action unique et élégant
                             let actionsHtml = '-';
                             if (d.fichier) {
                                 actionsHtml = `
-                                    <div class="d-flex justify-content-end gap-2">
-                                        <a href="/api/theses/files/${d.fichier}" target="_blank" class="btn btn-sm btn-outline-forest rounded-pill" title="Afficher"><i class="fas fa-eye"></i></a>
-                                        <a href="/api/theses/files/${d.fichier}?download=true" class="btn btn-sm btn-forest rounded-pill" title="Télécharger"><i class="fas fa-download"></i></a>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-emerald rounded-pill px-4 shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            Consulter
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-custom border-0 rounded-4">
+                                            <li><a class="dropdown-item py-2 px-3 small" href="/api/theses/files/${d.fichier}" target="_blank">
+                                                <i class="fas fa-eye me-2 text-emerald"></i> Lire le PDF
+                                            </a></li>
+                                            <li><a class="dropdown-item py-2 px-3 small" href="/api/theses/files/${d.fichier}?download=true">
+                                                <i class="fas fa-download me-2 text-emerald"></i> Télécharger
+                                            </a></li>
+                                        </ul>
                                     </div>`;
                             }
 
                             tbody.innerHTML += `
-                                <tr>
-                                    <td class="ps-4 fw-bold text-muted">${d.annee}</td>
-                                    <td style="max-width: 300px;">
-                                        <div class="text-truncate fw-medium" title="${d.titre}">${d.titre}</div>
-                                        <span class="badge bg-light text-secondary border extra-small">${d.type}</span>
+                                <tr class="transition-hover">
+                                    <td class="ps-4 fw-bold text-forest opacity-75">${d.annee}</td>
+                                    <td style="max-width: 350px;">
+                                        <div class="text-truncate fw-bold text-dark mb-1" title="${d.titre}">${d.titre}</div>
+                                        <span class="badge bg-light text-muted border-0 extra-small">${d.type}</span>
                                     </td>
-                                    <td class="small text-dark">${etudiantName}</td>
-                                    <td><span class="badge bg-emerald-soft text-emerald rounded-pill">${filiere}</span></td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-emerald me-2" style="width: 32px; height: 32px; font-size: 10px;">
+                                                ${d.etudiant ? d.etudiant.nom[0] : '?'}
+                                            </div>
+                                            <span class="small fw-medium">${etudiantName}</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-soft-emerald text-emerald rounded-pill px-3">${filiere}</span></td>
                                     <td class="small text-muted">${encadrantName}</td>
                                     <td class="text-end pe-4">
                                         ${actionsHtml}

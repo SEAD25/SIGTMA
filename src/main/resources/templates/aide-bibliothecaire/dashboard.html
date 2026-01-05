@@ -6,133 +6,132 @@
 
 <body>
     <div th:fragment="content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-5">
             <div>
-                <h5 class="fw-bold mb-0 text-forest">Aperçu du Référentiel</h5>
-                <p class="text-muted extra-small mb-0">Données en temps réel de la bibliothèque</p>
+                <h3 class="fw-bold mb-1 text-forest">Référentiel & Support</h3>
+                <p class="text-muted small mb-0">Bienvenue sur votre espace de gestion des thèses</p>
             </div>
-            <div class="d-flex gap-2">
-                <span id="connectionStatus" class="badge bg-secondary rounded-pill d-flex align-items-center px-3"
-                    style="font-size: 0.75rem;">
-                    <i class="fas fa-circle me-2" style="font-size: 0.5rem;"></i> Initialisation...
+            <div class="d-flex gap-3">
+                <span id="connectionStatus"
+                    class="badge glass-card border-0 text-dark rounded-pill d-flex align-items-center px-3"
+                    style="font-size: 0.8rem; background: rgba(255,255,255,0.5);">
+                    <i class="fas fa-circle text-success me-2" style="font-size: 0.6rem;"></i> Connecté
                 </span>
-                <button class="btn btn-light btn-sm rounded-pill px-3 shadow-sm" onclick="refreshDashboard()"
-                    style="font-size: 0.75rem;">
-                    <i class="fas fa-sync-alt me-1"></i> Actualiser
+                <button class="btn btn-white shadow-sm rounded-pill px-4 border-0" onclick="refreshDashboard()"
+                    style="font-size: 0.8rem; background: white;">
+                    <i class="fas fa-sync-alt me-2 text-emerald"></i> Actualiser
                 </button>
             </div>
         </div>
-        <div class="row g-4 mb-4">
+
+        <div class="row g-4 mb-5">
             <div class="col-md-6 col-xl-3">
-                <div
-                    class="card border-0 bg-emerald-vibrant text-white p-4 shadow-custom overflow-hidden position-relative h-100">
-                    <div class="d-flex justify-content-between align-items-center position-relative"
-                        style="z-index: 2;">
-                        <div>
-                            <p class="small mb-0 opacity-75 fw-medium">Étudiants Actifs</p>
-                            <h2 class="fw-bold mb-0 mt-1" id="statEtudiants">0</h2>
-                        </div>
-                        <div class="bg-white bg-opacity-20 p-3 rounded-circle shadow-sm">
-                            <i class="fas fa-user-graduate fa-2x"></i>
+                <div class="card border-0 bg-emerald-vibrant text-white p-4 shadow-custom overflow-hidden position-relative h-100"
+                    style="border-radius: 2rem;">
+                    <div class="position-relative" style="z-index: 2;">
+                        <p class="small mb-0 opacity-75 fw-medium">Étudiants Actifs</p>
+                        <h2 class="fw-bold mb-0 mt-1" id="statEtudiants">0</h2>
+                        <div class="mt-3">
+                            <span class="badge bg-white bg-opacity-20 rounded-pill extra-small px-3">Enrolled</span>
                         </div>
                     </div>
+                    <i class="fas fa-user-graduate position-absolute end-0 bottom-0 mb-n3 me-n3 opacity-10 fa-6x"
+                        style="transform: rotate(-15deg);"></i>
                 </div>
             </div>
             <div class="col-md-6 col-xl-3">
-                <div
-                    class="card border-0 bg-forest-gradient text-white p-4 shadow-custom overflow-hidden position-relative h-100">
-                    <div class="d-flex justify-content-between align-items-center position-relative"
-                        style="z-index: 2;">
-                        <div>
-                            <p class="small mb-0 opacity-75 fw-medium">Encadrants</p>
-                            <h2 class="fw-bold mb-0 mt-1" id="statEncadrants">0</h2>
-                        </div>
-                        <div class="bg-white bg-opacity-20 p-3 rounded-circle shadow-sm">
-                            <i class="fas fa-chalkboard-teacher fa-2x"></i>
+                <div class="card border-0 bg-brand-gradient text-white p-4 shadow-custom overflow-hidden position-relative h-100"
+                    style="border-radius: 2rem;">
+                    <div class="position-relative" style="z-index: 2;">
+                        <p class="small mb-0 opacity-75 fw-medium">Encadrants</p>
+                        <h2 class="fw-bold mb-0 mt-1" id="statEncadrants">0</h2>
+                        <div class="mt-3">
+                            <span class="badge bg-white bg-opacity-20 rounded-pill extra-small px-3">Professeurs</span>
                         </div>
                     </div>
+                    <i class="fas fa-chalkboard-teacher position-absolute end-0 bottom-0 mb-n3 me-n3 opacity-10 fa-6x"
+                        style="transform: rotate(-15deg);"></i>
                 </div>
             </div>
             <div class="col-md-6 col-xl-3">
-                <div
-                    class="card border-0 bg-mint-vibrant text-white p-4 shadow-custom overflow-hidden position-relative h-100">
-                    <div class="d-flex justify-content-between align-items-center position-relative"
-                        style="z-index: 2;">
-                        <div>
-                            <p class="small mb-0 opacity-75 fw-medium">Filières</p>
-                            <h2 class="fw-bold mb-0 mt-1" id="statFilieres">0</h2>
-                        </div>
-                        <div class="bg-white bg-opacity-20 p-3 rounded-circle shadow-sm">
-                            <i class="fas fa-university fa-2x"></i>
+                <div class="card border-0 bg-mint-vibrant text-white p-4 shadow-custom overflow-hidden position-relative h-100"
+                    style="border-radius: 2rem;">
+                    <div class="position-relative" style="z-index: 2;">
+                        <p class="small mb-0 opacity-75 fw-medium">Filières</p>
+                        <h2 class="fw-bold mb-0 mt-1" id="statFilieres">0</h2>
+                        <div class="mt-3">
+                            <span class="badge bg-white bg-opacity-20 rounded-pill extra-small px-3">Académique</span>
                         </div>
                     </div>
+                    <i class="fas fa-university position-absolute end-0 bottom-0 mb-n3 me-n3 opacity-10 fa-6x"
+                        style="transform: rotate(-15deg);"></i>
                 </div>
             </div>
             <div class="col-md-6 col-xl-3">
-                <div
-                    class="card border-0 bg-slate-dark text-white p-4 shadow-custom overflow-hidden position-relative h-100">
-                    <div class="d-flex justify-content-between align-items-center position-relative"
-                        style="z-index: 2;">
-                        <div>
-                            <p class="small mb-0 opacity-75 fw-medium">Dernières MàJ</p>
-                            <h2 class="fw-bold mb-0 mt-1" id="statUpdates">0</h2>
-                        </div>
-                        <div class="bg-white bg-opacity-20 p-3 rounded-circle shadow-sm">
-                            <i class="fas fa-clock fa-2x"></i>
+                <div class="card border-0 bg-forest-gradient text-white p-4 shadow-custom overflow-hidden position-relative h-100"
+                    style="border-radius: 2rem;">
+                    <div class="position-relative" style="z-index: 2;">
+                        <p class="small mb-0 opacity-75 fw-medium">Dernières MàJ</p>
+                        <h2 class="fw-bold mb-0 mt-1" id="statUpdates">0</h2>
+                        <div class="mt-3">
+                            <span class="badge bg-white bg-opacity-20 rounded-pill extra-small px-3">Aujourd'hui</span>
                         </div>
                     </div>
+                    <i class="fas fa-history position-absolute end-0 bottom-0 mb-n3 me-n3 opacity-10 fa-6x"
+                        style="transform: rotate(-15deg);"></i>
                 </div>
+            </div>
+        </div>
+
+        <h5 class="fw-bold mb-4 text-forest ms-2">Actions Rapides</h5>
+        <div class="action-grid mb-5">
+            <div class="action-card" onclick="openDepotModal()">
+                <div class="action-icon-box bg-soft-emerald">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <div class="action-title">Nouveau Dépôt</div>
+                <div class="action-subtitle">Enregistrer un dossier</div>
+            </div>
+            <a th:href="@{/aide-bibliothecaire/etudiants}" class="action-card">
+                <div class="action-icon-box bg-soft-blue">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <div class="action-title">Parcourir</div>
+                <div class="action-subtitle">Liste des thèses</div>
+            </a>
+            <div class="action-card" onclick="refreshDashboard()">
+                <div class="action-icon-box bg-soft-indigo">
+                    <i class="fas fa-sync"></i>
+                </div>
+                <div class="action-title">Actualiser</div>
+                <div class="action-subtitle">Mise à jour stats</div>
+            </div>
+            <div class="action-card">
+                <div class="action-icon-box bg-soft-purple">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <div class="action-title">Attestations</div>
+                <div class="action-subtitle">Générer documents</div>
             </div>
         </div>
 
         <div class="row g-4">
-            <div class="col-md-7">
-                <div class="card p-4 h-100 shadow-sm border-mint-soft">
-                    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-                        <h6 class="fw-bold mb-0 text-forest"><i class="fas fa-bolt text-emerald me-2"></i>Inscriptions
-                            Récentes</h6>
-                        <a href="#" class="btn btn-mint-light btn-sm rounded-pill px-3">Voir tout</a>
+            <div class="col-12">
+                <div class="card p-4 shadow-sm border-0 rounded-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3 px-2">
+                        <h5 class="fw-bold mb-0 text-forest"><i class="fas fa-bolt text-warning me-3"></i>Inscriptions
+                            Récentes</h5>
+                        <a th:href="@{/aide-bibliothecaire/etudiants}"
+                            class="btn btn-emerald btn-sm rounded-pill px-4">Tout voir</a>
                     </div>
-                    <div class="list-group list-group-flush" id="recentInscriptions">
-                        <div class="text-center py-4 text-muted small">Chargement...</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-5">
-                <div class="card p-4 h-100 shadow-sm border-mint-soft bg-mint-lightest">
-                    <h6 class="fw-bold mb-4 text-forest">Centre d'Actions Rapides</h6>
-                    <div class="d-grid gap-3">
-                        <button class="btn btn-action-emerald" onclick="openDepotModal()">
-                            <div class="bg-emerald p-2 rounded-3 me-3 text-white">
-                                <i class="fas fa-plus-circle"></i>
-                            </div>
-                            <div class="text-start">
-                                <span class="d-block fw-bold small text-emerald">Nouveau Dépôt</span>
-                                <span class="d-block extra-small text-muted">Étudiant + Thèse + Encadrant</span>
-                            </div>
-                        </button>
-                        <button class="btn btn-action-emerald" onclick="openEncadrantModal()">
-                            <div class="bg-emerald p-2 rounded-3 me-3 text-white">
-                                <i class="fas fa-user-tie"></i>
-                            </div>
-                            <div class="text-start">
-                                <span class="d-block fw-bold small text-emerald">Nouveau Encadrant</span>
-                                <span class="d-block extra-small text-muted">Mettre à jour l'annuaire</span>
-                            </div>
-                        </button>
-                        <button class="btn btn-action-emerald" onclick="openEtudiantModal()">
-                            <div class="bg-emerald p-2 rounded-3 me-3 text-white">
-                                <i class="fas fa-user-graduate"></i>
-                            </div>
-                            <div class="text-start">
-                                <span class="d-block fw-bold small text-emerald">Nouvel Étudiant</span>
-                                <span class="d-block extra-small text-muted">Ajouter dans le système</span>
-                            </div>
-                        </button>
+                    <div class="list-group list-group-flush px-2" id="recentInscriptions">
+                        <div class="text-center py-5 text-muted">
+                            <div class="spinner-border spinner-border-sm text-emerald me-2"></div> Chargement des
+                            données...
+                        </div>
                     </div>
                 </div>
             </div>
-
         </div>
 
         <!-- Modal Nouveau Dépôt -->
@@ -374,93 +373,6 @@
             </div>
         </div>
 
-        <!-- Modal Nouveau Encadrant (Standalone) -->
-        <div class="modal fade" id="modalEncadrant" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content border-0 shadow-lg" style="border-radius: 1.5rem;">
-                    <div class="modal-header border-0 pb-0">
-                        <h5 class="modal-title fw-bold text-forest">Ajouter un Encadrant</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <form id="formEncadrant">
-                            <div class="mb-3">
-                                <label class="small fw-medium mb-1">Prénom</label>
-                                <input type="text" name="prenom" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="small fw-medium mb-1">Nom</label>
-                                <input type="text" name="nom" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="small fw-medium mb-1">Email</label>
-                                <input type="email" name="email" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="small fw-medium mb-1">Grade</label>
-                                <input type="text" name="grade" class="form-control"
-                                    placeholder="Professeur, Docteur..." required>
-                            </div>
-                            <div class="text-end mt-4">
-                                <button type="button" class="btn btn-light rounded-pill px-4"
-                                    data-bs-dismiss="modal">Annuler</button>
-                                <button type="submit"
-                                    class="btn btn-forest rounded-pill px-4 shadow-sm text-white">Ajouter</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Nouvel Étudiant (Standalone) -->
-        <div class="modal fade" id="modalEtudiant" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content border-0 shadow-lg" style="border-radius: 1.5rem;">
-                    <div class="modal-header border-0 pb-0">
-                        <h5 class="modal-title fw-bold text-forest">Ajouter un Étudiant</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <form id="formEtudiant">
-                            <div class="mb-3">
-                                <label class="small fw-medium mb-1">Prénom</label>
-                                <input type="text" name="prenom" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="small fw-medium mb-1">Nom</label>
-                                <input type="text" name="nom" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="small fw-medium mb-1">Matricule</label>
-                                <input type="text" name="matricule" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="small fw-medium mb-1">Email</label>
-                                <input type="email" name="email" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="small fw-medium mb-1">Filière</label>
-                                <select id="selectFiliereEtudiant" name="filiereId" class="form-select" required>
-                                    <option value="">Chargement...</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="small fw-medium mb-1">Année Académique</label>
-                                <input type="text" name="anneeAcademique" class="form-control" placeholder="2024-2025"
-                                    required>
-                            </div>
-                            <div class="text-end mt-4">
-                                <button type="button" class="btn btn-light rounded-pill px-4"
-                                    data-bs-dismiss="modal">Annuler</button>
-                                <button type="submit"
-                                    class="btn btn-emerald rounded-pill px-4 shadow-sm text-white">Ajouter</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <script th:inline="javascript">
             // Etat global pour la sélection de filière (Mode 'new student' dans dossier)
@@ -603,25 +515,6 @@
                 }
             }
 
-            // Standalone Modals (From dashboard buttons)
-            function openEncadrantModal() {
-                const modalEl = document.getElementById('modalEncadrant');
-                if (modalEl) new bootstrap.Modal(modalEl).show();
-            }
-
-            function openEtudiantModal() {
-                const modalEl = document.getElementById('modalEtudiant');
-                if (modalEl) {
-                    const selFiliere = document.getElementById('selectFiliereEtudiant');
-                    if (selFiliere) {
-                        fetch('/api/filieres').then(r => r.json()).then(d => {
-                            selFiliere.innerHTML = '<option value="">Choisir</option>';
-                            d.forEach(f => selFiliere.innerHTML += `<option value="${f.id}">${f.nom}</option>`);
-                        });
-                    }
-                    new bootstrap.Modal(modalEl).show();
-                }
-            }
 
             // --- Initialisation et Soumission ---
 
@@ -675,8 +568,12 @@
                         })
                             .then(res => {
                                 if (res.ok) {
-                                    alert('Succès ! Dossier déposé.');
-                                    location.reload();
+                                    return res.json().then(data => {
+                                        if (confirm('Succès ! Dossier déposé. Voulez-vous télécharger l\'attestation de dépôt ?')) {
+                                            window.location.href = `/api/theses/${data.id}/attestation`;
+                                        }
+                                        location.reload();
+                                    });
                                 } else {
                                     return res.text().then(text => { throw new Error(text || res.statusText) });
                                 }
@@ -688,48 +585,6 @@
                     });
                 }
 
-                // Add handlers for formEtudiant and formEncadrant (Standalone)
-                const formEtu = document.getElementById('formEtudiant');
-                if (formEtu) {
-                    formEtu.addEventListener('submit', function (e) {
-                        e.preventDefault();
-                        const data = Object.fromEntries(new FormData(this));
-
-                        const payload = {
-                            prenom: data.prenom,
-                            nom: data.nom,
-                            matricule: data.matricule,
-                            email: data.email,
-                            anneeAcademique: data.anneeAcademique,
-                            filiere: { id: parseInt(data.filiereId) }
-                        };
-
-                        fetch('/api/etudiants', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        }).then(r => {
-                            if (r.ok) { alert('Étudiant ajouté'); location.reload(); }
-                            else alert('Erreur ajout étudiant');
-                        });
-                    });
-                }
-
-                const formEnc = document.getElementById('formEncadrant');
-                if (formEnc) {
-                    formEnc.addEventListener('submit', function (e) {
-                        e.preventDefault();
-                        const data = Object.fromEntries(new FormData(this));
-                        fetch('/api/encadrants', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(data)
-                        }).then(r => {
-                            if (r.ok) { alert('Encadrant ajouté'); location.reload(); }
-                            else alert('Erreur ajout encadrant');
-                        });
-                    });
-                }
             });
 
             function updateStatus(text, color) {
@@ -765,7 +620,12 @@
                                                 <p class="extra-small text-muted mb-0">${d.filiere}</p>
                                             </div>
                                         </div>
-                                        <span class="badge bg-mint-lightest text-forest extra-small border-mint-soft">${d.date}</span>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <a href="/api/theses/${d.id}/attestation" class="btn btn-outline-emerald btn-sm rounded-pill px-2" title="Attestation">
+                                                <i class="fas fa-file-pdf"></i>
+                                            </a>
+                                            <span class="badge bg-mint-lightest text-forest extra-small border-mint-soft">${d.date}</span>
+                                        </div>
                                     </div>
                                 `;
                             });

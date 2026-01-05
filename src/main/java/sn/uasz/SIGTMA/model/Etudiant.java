@@ -25,7 +25,7 @@ public class Etudiant {
     @ManyToOne
     private Filiere filiere;
 
-    @OneToOne(mappedBy = "etudiant")
+    @OneToMany(mappedBy = "etudiant")
     @JsonIgnore
-    private TheseMemoire these;
+    private java.util.List<TheseMemoire> theses;
 }
