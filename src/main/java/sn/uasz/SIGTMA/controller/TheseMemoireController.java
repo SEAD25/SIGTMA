@@ -88,6 +88,11 @@ public class TheseMemoireController {
         return theseMemoireService.listerTheses();
     }
 
+    @GetMapping("/recents")
+    public List<TheseMemoire> listerRecents() {
+        return theseMemoireService.listerThesesRecentes();
+    }
+
     @PostMapping("/{id}/valider")
     public TheseMemoire validerThese(@PathVariable Long id) {
         return theseMemoireService.validerThese(id);
@@ -101,8 +106,10 @@ public class TheseMemoireController {
     @GetMapping("/recherche")
     public List<TheseMemoire> rechercher(
             @RequestParam(required = false) String motCle,
-            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate date) {
-        return theseMemoireService.rechercher(motCle, date);
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate date,
+            @RequestParam(required = false) Integer annee,
+            @RequestParam(required = false) String type) {
+        return theseMemoireService.rechercher(motCle, date, annee, type);
     }
 
     @GetMapping("/{id}")

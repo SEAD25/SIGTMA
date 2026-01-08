@@ -33,10 +33,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/login", "/register", "/api/utilisateurs/inscription").permitAll()
-                        .requestMatchers("/admin/**", "/api/utilisateurs/**").hasRole("ADMINISTRATEUR")
+                        .requestMatchers("/admin/**", "/api/utilisateurs/**", "/api/admin/stats/**")
+                        .hasRole("ADMINISTRATEUR")
                         .requestMatchers("/api/utilisateurs/profil").authenticated()
-                        .requestMatchers("/bibliothecaire/**").hasRole("BIBLIOTHECAIRE")
-                        .requestMatchers("/api/filieres/**").hasAnyRole("ADMINISTRATEUR", "AIDE_BIBLIOTHECAIRE")
+                        .requestMatchers("/bibliothecaire/**", "/api/bibliothecaire/stats/**")
+                        .hasAnyRole("BIBLIOTHECAIRE", "ADMINISTRATEUR")
+                        .requestMatchers("/api/theses/files/**", "/api/theses/recherche", "/api/theses").authenticated()
+                        .requestMatchers("/api/theses/*/valider", "/api/theses/*/rejeter")
+                        .hasAnyRole("BIBLIOTHECAIRE", "ADMINISTRATEUR")
+                        .requestMatchers("/api/filieres/**")
+                        .hasAnyRole("ADMINISTRATEUR", "AIDE_BIBLIOTHECAIRE", "BIBLIOTHECAIRE")
                         .requestMatchers("/aide-bibliothecaire/**", "/api/aide/**", "/api/theses/depot",
                                 "/api/etudiants/**", "/api/encadrants/**")
                         .hasRole("AIDE_BIBLIOTHECAIRE")
@@ -47,7 +53,9 @@ public class SecurityConfig {
                         .permitAll())
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
-                        .permitAll());
+                        .permitAll())
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.sameOrigin()));
 
         return http.build();
     }

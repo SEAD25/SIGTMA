@@ -29,6 +29,7 @@ public class FiliereService {
         Filiere f = filiereRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Filière non trouvée"));
         f.setNom(details.getNom());
+        f.setNomUfr(details.getNomUfr());
         return filiereRepository.save(f);
     }
 

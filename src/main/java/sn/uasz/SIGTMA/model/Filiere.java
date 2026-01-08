@@ -18,6 +18,7 @@ public class Filiere {
     private Long id;
 
     private String nom;
+    private String nomUfr;
 
     @OneToMany(mappedBy = "filiere")
     @JsonIgnore

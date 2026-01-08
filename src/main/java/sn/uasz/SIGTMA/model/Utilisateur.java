@@ -45,6 +45,7 @@ public class Utilisateur implements UserDetails { // 1. Implémenter UserDetails
 
     @NotBlank(message = "Le mot de passe est obligatoire")
     @Size(min = 6, message = "Le mot de passe doit contenir au moins 6 caractères")
+    @JsonIgnore
     private String motDePasse; // Spring Security utilisera ce champ
 
     private String role; // "ADMIN", "BIBLIOTHECAIRE", "ETUDIANT"

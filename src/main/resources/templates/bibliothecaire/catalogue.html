@@ -157,6 +157,10 @@
                             let actionsHtml = '-';
                             if (d.fichier) {
                                 actionsHtml = `
+                                    <div class="d-flex align-items-center justify-content-end gap-2">
+                                    <a href="/api/theses/${d.id}/attestation" class="btn btn-sm btn-outline-emerald rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" title="Attestation">
+                                        <i class="fas fa-stamp"></i>
+                                    </a>
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-emerald rounded-pill px-4 shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                             Consulter
@@ -169,7 +173,8 @@
                                                 <i class="fas fa-download me-2 text-emerald"></i> Télécharger
                                             </a></li>
                                         </ul>
-                                    </div>`;
+                                    </div>
+                                </div>`;
                             }
 
                             tbody.innerHTML += `

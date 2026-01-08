@@ -12,9 +12,17 @@
                     <h5 class="fw-bold mb-0 text-forest">Comptes Utilisateurs</h5>
                     <p class="small text-muted mb-0">Gérez les accès du personnel de la bibliothèque</p>
                 </div>
-                <button class="btn btn-emerald rounded-pill px-4 shadow-sm" onclick="openCreateModal()">
-                    <i class="fas fa-user-plus me-2"></i> Ajouter un Utilisateur
-                </button>
+                <div class="d-flex gap-3 align-items-center">
+                    <div class="position-relative">
+                        <i
+                            class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted opacity-50"></i>
+                        <input type="text" id="searchInput" class="form-control rounded-pill ps-5 border-light bg-light"
+                            placeholder="Rechercher..." style="width: 250px;">
+                    </div>
+                    <button class="btn btn-emerald rounded-pill px-4 shadow-sm" onclick="openCreateModal()">
+                        <i class="fas fa-user-plus me-2"></i> Ajouter un Utilisateur
+                    </button>
+                </div>
             </div>
 
             <div class="table-responsive px-2">
@@ -124,6 +132,17 @@
                     e.preventDefault();
                     saveUser(new FormData(this));
                 });
+
+                document.getElementById('searchInput').addEventListener('input', function (e) {
+                    const term = e.target.value.toLowerCase();
+                    const filtered = users.filter(u =>
+                        u.nom.toLowerCase().includes(term) ||
+                        u.prenom.toLowerCase().includes(term) ||
+                        u.email.toLowerCase().includes(term) ||
+                        u.role.toLowerCase().includes(term)
+                    );
+                    renderUsersTable(filtered);
+                });
             });
 
             function loadUsers() {
@@ -135,10 +154,14 @@
                     });
             }
 
-            function renderUsersTable() {
+            function renderUsersTable(data = users) {
                 const tbody = document.getElementById('tableUsers');
                 tbody.innerHTML = '';
-                users.forEach(u => {
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted">Aucun utilisateur trouvé.</td></tr>';
+                    return;
+                }
+                data.forEach(u => {
                     const initials = (u.prenom[0] + u.nom[0]).toUpperCase();
                     tbody.innerHTML += `
                         <tr>

@@ -277,7 +277,7 @@
 
                     if (t.fichier) {
                         setTimeout(() => {
-                            iframe.src = '/api/theses/files/' + t.fichier;
+                            iframe.src = '/api/theses/files/' + encodeURIComponent(t.fichier);
                         }, 100);
 
                         iframe.onload = function () {

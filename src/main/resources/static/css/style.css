@@ -17,6 +17,10 @@
     --accent-red: #ef4444;
 }
 
+.bg-forest {
+    background-color: var(--dark-emerald) !important;
+}
+
 body {
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
     background-color: #f8fafc;
@@ -201,6 +205,19 @@ body {
     background-color: #059669;
     transform: translateY(-2px);
     box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+    color: white;
+}
+
+.btn-forest {
+    background-color: var(--dark-emerald);
+    color: white;
+    border: none;
+}
+
+.btn-forest:hover {
+    background-color: #043d2e;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(6, 78, 59, 0.3);
     color: white;
 }
 

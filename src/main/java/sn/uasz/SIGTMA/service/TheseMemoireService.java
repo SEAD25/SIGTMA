@@ -111,14 +111,19 @@ public class TheseMemoireService {
         return theseMemoireRepository.findAll();
     }
 
+    public List<TheseMemoire> listerThesesRecentes() {
+        return theseMemoireRepository.findTop10ByOrderByDateDeDepotDesc();
+    }
+
     public TheseMemoire trouverThese(Long id) {
         return theseMemoireRepository.findById(id).orElse(null);
     }
 
-    public List<TheseMemoire> rechercher(String motCle, LocalDate date) {
-        if ((motCle != null && !motCle.isEmpty()) || date != null) {
+    public List<TheseMemoire> rechercher(String motCle, LocalDate date, Integer annee, String type) {
+        if ((motCle != null && !motCle.isEmpty()) || date != null || annee != null
+                || (type != null && !type.isEmpty())) {
             String term = (motCle == null) ? "" : motCle;
-            return theseMemoireRepository.rechercherAvecDate(term, date);
+            return theseMemoireRepository.rechercherAvecFiltres(term, date, annee, type);
         }
         return theseMemoireRepository.findAll();
     }

@@ -13,35 +13,81 @@
             </div>
             <div class="col-md-7">
                 <div class="d-flex gap-2 justify-content-end">
+                    <!-- Year Filter -->
+                    <div class="input-group shadow-sm" style="width: 150px;">
+                        <span class="input-group-text bg-white border-end-0 text-muted px-2"><i
+                                class="fas fa-calendar-alt"></i></span>
+                        <select id="yearFilter" class="form-select border-start-0 ps-0" onchange="searchDossiers()">
+                            <option value="">Année (Toutes)</option>
+                        </select>
+                    </div>
+
+                    <!-- Type Filter -->
+                    <div class="input-group shadow-sm" style="width: 130px;">
+                        <span class="input-group-text bg-white border-end-0 text-muted px-2"><i
+                                class="fas fa-file-alt"></i></span>
+                        <select id="typeFilter" class="form-select border-start-0 ps-0" onchange="searchDossiers()">
+                            <option value="">Type (Tous)</option>
+                            <option value="THESE">Thèses</option>
+                            <option value="MEMOIRE">Mémoires</option>
+                        </select>
+                    </div>
+
                     <!-- Date Filter -->
-                    <div class="input-group shadow-sm" style="width: 180px;">
-                        <span class="input-group-text bg-white border-end-0 text-muted ps-3"><i
+                    <div class="input-group shadow-sm" style="width: 160px;">
+                        <span class="input-group-text bg-white border-end-0 text-muted px-2"><i
                                 class="far fa-calendar"></i></span>
                         <input type="date" id="dateFilter" class="form-control border-start-0 ps-0"
                             onchange="searchDossiers()">
                     </div>
 
                     <!-- Search Input -->
-                    <div class="input-group shadow-sm" style="width: 300px;">
-                        <span class="input-group-text bg-white border-end-0 text-muted"><i
+                    <div class="input-group shadow-sm" style="width: 250px;">
+                        <span class="input-group-text bg-white border-end-0 text-muted ps-2"><i
                                 class="fas fa-search"></i></span>
                         <input type="text" id="searchInput" class="form-control border-start-0 ps-0"
-                            placeholder="Nom, Filière, Titre..." oninput="searchDossiers()">
+                            placeholder="Recherche..." oninput="searchDossiers()">
                     </div>
 
                     <!-- Print Button -->
-                    <button class="btn btn-emerald shadow-sm" onclick="printList()">
-                        <i class="fas fa-print me-2"></i>Imprimer/PDF
+                    <button class="btn btn-emerald shadow-sm px-3" onclick="printList()">
+                        <i class="fas fa-print"></i>
+                    </button>
+                    <!-- Export PDF Button -->
+                    <button class="btn btn-danger shadow-sm px-3" onclick="exportPDF()"
+                        title="Exporter REPERTOIRE (PDF)">
+                        <i class="fas fa-file-pdf"></i>
                     </button>
                     <!-- Export CSV Button -->
-                    <!-- <button class="btn btn-outline-forest shadow-sm" onclick="exportCSV()">
+                    <button class="btn btn-forest shadow-sm px-3" onclick="exportCSV()"
+                        title="Exporter en CSV pour rapport">
                         <i class="fas fa-file-csv"></i>
-                    </button> -->
+                    </button>
                 </div>
             </div>
         </div>
 
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden" id="printableArea">
+            <!-- Header for Print -->
+            <div class="d-none d-print-block text-center mb-4" style="visibility: visible !important;">
+                <div class="mb-3">
+                    <h6 class="fw-bold mb-0" style="color: #1a7a3b; font-size: 14pt;">UNIVERSITE ASSANE SECK DE
+                        ZIGUINCHOR</h6>
+                    <p class="fw-bold mb-0" style="color: #1a7a3b; font-size: 12pt;">RECTORAT</p>
+                    <div style="font-size: 8pt; margin: 5px 0;">*********</div>
+                    <p class="fw-bold mb-0" style="font-size: 11pt;">BIBLIOTHEQUE CENTRALE</p>
+                    <div style="font-size: 8pt; margin: 5px 0;">*****</div>
+                    <p class="extra-small mb-0" style="font-size: 8pt;">BP : 523 - Ziguinchor / Tél : 76 637 88 40</p>
+                </div>
+                <div class="mb-4">
+                    <img src="/images/uasz-logo.png" style="width: 80px;">
+                </div>
+                <div class="p-3 mb-4" style="background-color: #f1f8f1; border: 2px solid #a5d6a7;">
+                    <h5 class="fw-bold text-uppercase mb-0" style="color: #1a7a3b;" id="printReportTitle">Répertoire des
+                        dossiers déposés</h5>
+                </div>
+            </div>
+
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0" id="dossiersTable">
                     <thead class="bg-light">
@@ -76,7 +122,7 @@
 
                 #printableArea,
                 #printableArea * {
-                    visibility: visible;
+                    visibility: visible !important;
                 }
 
                 #printableArea {
@@ -86,6 +132,7 @@
                     width: 100%;
                     border: none !important;
                     box-shadow: none !important;
+                    background: white !important;
                 }
 
                 .hide-print {
@@ -94,44 +141,69 @@
 
                 .table {
                     border-collapse: collapse !important;
+                    width: 100% !important;
+                    font-size: 10pt !important;
                 }
 
                 .table td,
                 .table th {
-                    border: 1px solid #ddd !important;
-                    padding: 8px !important;
+                    border: 1px solid #000 !important;
+                    padding: 6px !important;
+                }
+
+                .table thead th {
+                    background-color: #f8f9fa !important;
+                    color: #000 !important;
+                    text-align: center !important;
                 }
 
                 /* Badge styling fix for print */
                 .badge {
-                    border: 1px solid #000;
+                    border: 1px solid #666;
                     color: #000 !important;
                     background: transparent !important;
+                    padding: 2px 8px !important;
                 }
             }
         </style>
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {
+                populateYearFilter();
                 loadDossiers();
             });
+
+            function populateYearFilter() {
+                const select = document.getElementById('yearFilter');
+                const currentYear = new Date().getFullYear();
+                for (let year = currentYear; year >= 2020; year--) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    select.appendChild(option);
+                }
+            }
 
             let debounceTimer;
             function searchDossiers() {
                 const query = document.getElementById('searchInput').value;
                 const date = document.getElementById('dateFilter').value;
+                const year = document.getElementById('yearFilter').value;
+                const type = document.getElementById('typeFilter').value;
 
                 clearTimeout(debounceTimer);
                 debounceTimer = setTimeout(() => {
-                    loadDossiers(query, date);
+                    loadDossiers(query, date, year, type);
                 }, 300);
             }
 
-            function loadDossiers(query = '', date = '') {
+            function loadDossiers(query = '', date = '', year = '', type = '') {
                 let url = '/api/theses/recherche?';
                 const params = new URLSearchParams();
                 if (query) params.append('motCle', query);
                 if (date) params.append('date', date);
+                if (year) params.append('annee', year);
+                if (type) params.append('type', type);
 
                 // If no params, default to /api/theses (all) but filtered manually if needed or backend handles empty params?
                 // Our backend handles optional params. If both empty, it calls rechercher("", null) -> findAll
@@ -161,16 +233,19 @@
                             else statusBadge = '<span class="badge bg-warning-subtle text-warning rounded-pill">En Attente</span>';
 
                             // Boutons d'action
-                            let actionBtns = '';
+                            let actionBtns = `<div class="d-flex justify-content-end gap-2">
+                                <a href="/api/theses/${d.id}/attestation" class="btn btn-sm btn-emerald rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 32px; height: 32px;" title="Générer Attestation">
+                                    <i class="fas fa-stamp"></i>
+                                </a>`;
+
                             if (d.fichier) {
-                                actionBtns = `
-                                    <div class="d-flex justify-content-end gap-2">
-                                        <a href="/api/theses/files/${d.fichier}" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill" title="Afficher"><i class="fas fa-eye"></i></a>
-                                        <a href="/api/theses/files/${d.fichier}?download=true" class="btn btn-sm btn-danger rounded-pill" title="Télécharger"><i class="fas fa-download"></i></a>
-                                    </div>`;
+                                actionBtns += `
+                                    <a href="/api/theses/files/${d.fichier}" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill px-2" title="Afficher"><i class="fas fa-eye"></i></a>
+                                    <a href="/api/theses/files/${d.fichier}?download=true" class="btn btn-sm btn-danger rounded-pill px-2" title="Télécharger"><i class="fas fa-download"></i></a>`;
                             } else {
-                                actionBtns = `<span class="text-muted extra-small">Aucun fichier</span>`;
+                                actionBtns += `<span class="text-muted extra-small align-self-center ms-2">Pas de PDF</span>`;
                             }
+                            actionBtns += `</div>`;
 
                             tbody.innerHTML += `
                                 <tr>
@@ -209,7 +284,51 @@
             }
 
             function printList() {
+                const year = document.getElementById('yearFilter').value;
+                const titleEl = document.getElementById('printReportTitle');
+                if (year) {
+                    titleEl.innerText = `RÉPERTOIRE DES DÉPÔTS DE L'ANNÉE ${year}`;
+                } else {
+                    titleEl.innerText = "RÉPERTOIRE GÉNÉRAL DES DOSSIERS DÉPOSÉS";
+                }
                 window.print();
+            }
+
+            function exportCSV() {
+                const year = document.getElementById('yearFilter').value;
+                if (!year) {
+                    alert('Veuillez sélectionner une année pour exporter le rapport annuel.');
+                    return;
+                }
+
+                if (!confirm(`Voulez-vous vraiment exporter le rapport CSV pour l'année ${year} ?`)) {
+                    return;
+                }
+
+                // On utilise l'endpoint existant dans RapportStatistiqueController
+                // default type "TOUS" or we could ask, but following the "rapport annuel" logic
+                window.location.href = `/api/rapports/export?type=TOUS&annee=${year}`;
+            }
+
+            function exportPDF() {
+                const year = document.getElementById('yearFilter').value;
+                const type = document.getElementById('typeFilter').value;
+
+                if (!year) {
+                    alert('Veuillez sélectionner une année pour exporter le répertoire PDF.');
+                    return;
+                }
+
+                if (!type) {
+                    alert('Veuillez sélectionner un type (Thèse ou Mémoire) pour exporter le répertoire PDF associé.');
+                    return;
+                }
+
+                if (!confirm(`Voulez-vous vraiment générer le répertoire PDF pour ${type === 'THESE' ? 'les THÈSES' : 'les MÉMOIRES'} de l'année ${year} ?`)) {
+                    return;
+                }
+
+                window.location.href = `/api/rapports/export/pdf?type=${type}&annee=${year}`;
             }
         </script>
     </div>

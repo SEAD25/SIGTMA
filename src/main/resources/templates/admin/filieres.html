@@ -12,9 +12,17 @@
                     <h5 class="fw-bold mb-0 text-forest">Filières & Départements</h5>
                     <p class="small text-muted mb-0">Gérez les filières académiques de l'université</p>
                 </div>
-                <button class="btn btn-emerald rounded-pill px-4 shadow-sm" onclick="openCreateModal()">
-                    <i class="fas fa-plus me-2"></i> Ajouter une Filière
-                </button>
+                <div class="d-flex gap-3 align-items-center">
+                    <div class="position-relative">
+                        <i
+                            class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted opacity-50"></i>
+                        <input type="text" id="searchInput" class="form-control rounded-pill ps-5 border-light bg-light"
+                            placeholder="Rechercher..." style="width: 250px;">
+                    </div>
+                    <button class="btn btn-emerald rounded-pill px-4 shadow-sm" onclick="openCreateModal()">
+                        <i class="fas fa-plus me-2"></i> Ajouter une Filière
+                    </button>
+                </div>
             </div>
 
             <div class="table-responsive px-2">
@@ -24,6 +32,7 @@
                             <th class="ps-3 text-secondary text-uppercase extra-small fw-bold border-0">ID</th>
                             <th class="text-secondary text-uppercase extra-small fw-bold border-0">Nom de la Filière
                             </th>
+                            <th class="text-secondary text-uppercase extra-small fw-bold border-0">UFR</th>
                             <th class="text-end pe-3 text-secondary text-uppercase extra-small fw-bold border-0">Actions
                             </th>
                         </tr>
@@ -56,6 +65,11 @@
                                 <input type="text" name="nom" id="filiereNom" class="form-control rounded-3"
                                     placeholder="Ex: Informatique" required>
                             </div>
+                            <div class="mb-3">
+                                <label class="small fw-medium mb-1">Nom de l'UFR</label>
+                                <input type="text" name="nomUfr" id="filiereUfr" class="form-control rounded-3"
+                                    placeholder="Ex: UFR DES SCIENCES ET TECHNOLOGIES">
+                            </div>
                             <div class="text-end mt-4">
                                 <button type="button" class="btn btn-light rounded-pill px-4 me-2"
                                     data-bs-dismiss="modal">Annuler</button>
@@ -80,6 +94,12 @@
                     e.preventDefault();
                     saveFiliere(new FormData(this));
                 });
+
+                document.getElementById('searchInput').addEventListener('input', function (e) {
+                    const term = e.target.value.toLowerCase();
+                    const filtered = filieres.filter(f => f.nom.toLowerCase().includes(term));
+                    renderFilieresTable(filtered);
+                });
             });
 
             function loadFilieres() {
@@ -91,18 +111,19 @@
                     });
             }
 
-            function renderFilieresTable() {
+            function renderFilieresTable(data = filieres) {
                 const tbody = document.getElementById('tableFilieres');
                 tbody.innerHTML = '';
-                if (filieres.length === 0) {
+                if (data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-muted">Aucune filière trouvée.</td></tr>';
                     return;
                 }
-                filieres.forEach(f => {
+                data.forEach(f => {
                     tbody.innerHTML += `
                         <tr>
                             <td class="small text-muted fw-bold">#${f.id}</td>
                             <td class="fw-medium text-dark">${f.nom}</td>
+                            <td><span class="badge border text-dark bg-light extra-small">${f.nomUfr || '-'}</span></td>
                             <td class="text-end">
                                 <button onclick="openEditModal(${f.id})" class="btn btn-icon btn-light text-muted border-0 me-2 shadow-sm"><i class="fas fa-edit"></i></button>
                                 <button onclick="deleteFiliere(${f.id})" class="btn btn-icon btn-light text-danger border-0 shadow-sm"><i class="fas fa-trash"></i></button>
@@ -125,6 +146,7 @@
 
                 document.getElementById('filiereId').value = f.id;
                 document.getElementById('filiereNom').value = f.nom;
+                document.getElementById('filiereUfr').value = f.nomUfr || '';
                 document.getElementById('modalTitle').innerText = 'Modifier la Filière';
                 filiereModal.show();
             }

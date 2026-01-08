@@ -39,6 +39,7 @@ public class TheseMemoire {
     private sn.uasz.SIGTMA.enums.StatutThese status = sn.uasz.SIGTMA.enums.StatutThese.EN_ATTENTE;
 
     @ManyToOne
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Utilisateur utilisateur;
 
     @ManyToOne
